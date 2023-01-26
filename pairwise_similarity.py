@@ -48,7 +48,8 @@ df = pd.DataFrame(sim_arr)
 mask = pd.DataFrame(np.triu(np.ones(df.shape)).astype(bool))
 df[mask] = 0
 import plotly.express as px
-fig = px.imshow(df, color_continuous_scale='hot')
+
+fig = px.imshow(df, color_continuous_scale="hot")
 fig.show()
 # print(df)
 
