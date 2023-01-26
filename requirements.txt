@@ -4,3 +4,4 @@ numpy
 seaborn
 matplotlib
 pylint==2.11.1
+plotly-express
