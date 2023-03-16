@@ -2,34 +2,41 @@ import sys
 import pandas as pd
 import numpy as np
 from nltk.corpus import stopwords
-import nltk
-nltk.download('stopwords')
-import re
-from sklearn.feature_extraction.text import TfidfVectorizer
-
 from keras.preprocessing.text import Tokenizer
+import re
+
 # from keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from sklearn.feature_extraction.text import TfidfVectorizer 
 
 sys.path.append("..")
 from documents import document_list
 
 # Clean documents df
-documents_df=pd.DataFrame(document_list,columns=['documents'])
-stop_words_l=stopwords.words('english')
-documents_df['documents_cleaned']=documents_df.documents.apply(lambda x: " ".join(re.sub(r'[^a-zA-Z]',' ',w).lower() for w in x.split() if re.sub(r'[^a-zA-Z]',' ',w).lower() not in stop_words_l) )
+documents_df = pd.DataFrame(document_list, columns=["documents"])
+stop_words_l = stopwords.words("english")
+documents_df["documents_cleaned"] = documents_df.documents.apply(
+    lambda x: " ".join(
+        re.sub(r"[^a-zA-Z]", " ", w).lower()
+        for w in x.split()
+        if re.sub(r"[^a-zA-Z]", " ", w).lower() not in stop_words_l
+    )
+)
+
+tfidfvectoriser = TfidfVectorizer()
+tfidfvectoriser.fit(documents_df.documents_cleaned)
+tfidf_vectors = tfidfvectoriser.transform(documents_df.documents_cleaned)
 
 tokenizer=Tokenizer()
 tokenizer.fit_on_texts(documents_df.documents_cleaned)
 tokenized_documents=tokenizer.texts_to_sequences(documents_df.documents_cleaned)
 tokenized_paded_documents=pad_sequences(tokenized_documents,maxlen=64,padding='post')
 vocab_size=len(tokenizer.word_index)+1
-tfidfvectoriser=TfidfVectorizer(min_df=1, stop_words="english")
 
 # reading Glove word embeddings into a dictionary with "word" as key and values as word vectors
 embeddings_index = dict()
 
-with open('glove.6b/glove.6B.100d.txt') as file:
+with open('glove.6B/glove.6B.100d.txt') as file:
     for line in file:
         values = line.split()
         word = values[0]

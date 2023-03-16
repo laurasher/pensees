@@ -10,7 +10,7 @@ from documents import document_list
 # --- Input params --- #
 N = 2
 key_document = 5
-key_document_ind = key_document-1
+key_document_ind = key_document - 1
 # -------------------- #
 
 corpus = document_list
@@ -31,9 +31,10 @@ sim_arr = pairwise_similarity.toarray()
 np.fill_diagonal(sim_arr, np.nan)
 sim_df = pd.DataFrame(sim_arr)
 
+
 def get_most_n_similar(document_num=0, N=10):
     # Want to be able to refer to Pensee's by number, but the list is 0-indexed
-    document_num = document_num-1
+    document_num = document_num - 1
     # Subset document df to input document column
     df = sim_df.loc[document_num]
     df_sorted = df.sort_values(ascending=False)
