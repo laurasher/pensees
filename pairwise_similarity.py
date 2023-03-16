@@ -9,7 +9,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 sys.path.append("..")
 from documents import document_list
 
-
 # from bokeh.models import BasicTicker, ColorBar, LinearColorMapper, PrintfTickFormatter
 # from bokeh.plotting import figure, show
 
@@ -91,3 +90,6 @@ fig.show()
 # p.add_layout(color_bar, 'right')
 
 # show(p)
+
+# "187. Order.—Men despise religion; they hate it and fear it is true. To remedy this, we must begin by showing that religion is not contrary to reason; that it is venerable, to inspire respect for it; then we must make it lovable, to make good men hope it is true; finally, we must prove it is true.\n\nVenerable, because it has perfect knowledge of man; lovable because it promises the true good.\n",
+# "442. Man's true nature, his true good, true virtue, and true religion, are things of which the knowledge is inseparable.\n",
