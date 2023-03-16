@@ -7,6 +7,11 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 sys.path.append("..")
 from documents import document_list
 
+# --- Input params --- #
+N = 10
+key_document = 1
+# -------------------- #
+
 corpus = document_list
 vect = TfidfVectorizer(min_df=1, stop_words="english")
 tfidf = vect.fit_transform(corpus)
@@ -23,6 +28,7 @@ sim_df = pd.DataFrame(sim_arr)
 # print(sim_df)
 # print(type(sim_df))
 
+
 def get_most_n_similar(document_num=0, N=10):
     # Subset document df to input document column
     df = sim_df.loc[document_num]
@@ -34,8 +40,7 @@ def get_most_n_similar(document_num=0, N=10):
     print(top_n)
     return top_n
 
-N = 10
-key_document = 1
+
 top_n = get_most_n_similar(key_document, N)
 
 print(f"------- Pensee #{key_document} -------")
