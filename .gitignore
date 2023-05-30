@@ -2,3 +2,8 @@ __pycache__
 .DS_Store
 *glove.6B
 *.model
+kmeans_clusters/
+bert_clusters/
+JHU*
+*.ppt
+*.pptx

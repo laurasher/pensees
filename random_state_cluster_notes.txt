@@ -1,0 +1,139 @@
+## RANDOM STATE 1
+Cluster 0 key words: ['christ', 'jesus', 'god', 'jews', 'death']
+Cluster 0 contains 60 pensées
+Cluster 1 key words: ['god', 'non', 'et', 'make', 'justice']
+Cluster 1 contains 132 pensées
+Cluster 2 key words: ['happy', 'body', 'let', 'man', 'make']
+Cluster 2 contains 32 pensées
+Cluster 3 key words: ['truth', 'great', 'church', 'things', 'certain']
+Cluster 3 contains 46 pensées
+Cluster 4 key words: ['good', 'evil', 'say', 'god', 'life']
+Cluster 4 contains 35 pensées
+Cluster 5 key words: ['god', 'man', 'men', 'religion', 'love']
+Cluster 5 contains 117 pensées
+Cluster 6 key words: ['people', 'church', 'time', 'prophets', 'foretold']
+Cluster 6 contains 35 pensées
+Cluster 7 key words: ['man', 'men', 'nature', 'world', 'great']
+Cluster 7 contains 214 pensées
+Cluster 8 key words: ['true', 'miracles', 'believe', 'god', 'men']
+Cluster 8 contains 68 pensées
+Cluster 9 key words: ['different', 'say', 'words', 'said', 'play']
+Cluster 9 contains 40 pensées
+Cluster 10 key words: ['man', 'greatness', 'misery', 'great', 'know']
+Cluster 10 contains 28 pensées
+Cluster 11 key words: ['reason', 'religion', 'say', 'contrary', 'judge']
+Cluster 11 contains 61 pensées
+Cluster 12 key words: ['messiah', 'king', 'prophecies', 'foretold', 'jews']
+Cluster 12 contains 55 pensées
+
+## RANDOM STATE 2
+Cluster 0 key words: ['away', 'place', 'let', 'man', 'know']
+Cluster 0 contains 27 pensées
+Cluster 1 key words: ['believe', 'order', 'faith', 'men', 'reason']
+Cluster 1 contains 34 pensées
+Cluster 2 key words: ['people', 'jews', 'non', 'prophecies', 'god']
+Cluster 2 contains 54 pensées
+Cluster 3 key words: ['god', 'love', 'man', 'men', 'true']
+Cluster 3 contains 67 pensées
+Cluster 4 key words: ['god', 'miracles', 'truth', 'great', 'say']
+Cluster 4 contains 192 pensées
+Cluster 5 key words: ['man', 'men', 'god', 'great', 'make']
+Cluster 5 contains 150 pensées
+Cluster 6 key words: ['nature', 'man', 'god', 'natural', 'good']
+Cluster 6 contains 59 pensées
+Cluster 7 key words: ['death', 'diversion', 'thinking', 'man', 'make']
+Cluster 7 contains 39 pensées
+Cluster 8 key words: ['greatness', 'man', 'thing', 'seek', 'great']
+Cluster 8 contains 61 pensées
+Cluster 9 key words: ['different', 'superstition', 'god', 'piety', 'say']
+Cluster 9 contains 19 pensées
+Cluster 10 key words: ['good', 'evil', 'meaning', 'god', 'say']
+Cluster 10 contains 56 pensées
+Cluster 11 key words: ['reason', 'religion', 'true', 'man', 'say']
+Cluster 11 contains 82 pensées
+Cluster 12 key words: ['christ', 'jesus', 'god', 'jews', 'men']
+Cluster 12 contains 83 pensées
+
+## RANDOM STATE 3
+Cluster 0 key words: ['church', 'god', 'miracle', 'man', 'miracles']
+Cluster 0 contains 35 pensées
+Cluster 1 key words: ['soul', 'body', 'man', 'different', 'things']
+Cluster 1 contains 51 pensées
+Cluster 2 key words: ['know', 'truth', 'say', 'man', 'men']
+Cluster 2 contains 93 pensées
+Cluster 3 key words: ['men', 'like', 'god', 'man', 'power']
+Cluster 3 contains 71 pensées
+Cluster 4 key words: ['miracles', 'christ', 'jesus', 'believe', 'god']
+Cluster 4 contains 30 pensées
+Cluster 5 key words: ['christ', 'jesus', 'god', 'jews', 'prophecies']
+Cluster 5 contains 101 pensées
+Cluster 6 key words: ['people', 'god', 'man', 'law', 'reason']
+Cluster 6 contains 52 pensées
+Cluster 7 key words: ['reason', 'mind', 'man', 'men', 'things']
+Cluster 7 contains 75 pensées
+Cluster 8 key words: ['god', 'good', 'man', 'nature', 'evil']
+Cluster 8 contains 77 pensées
+Cluster 9 key words: ['thought', 'man', 'great', 'nature', 'think']
+Cluster 9 contains 47 pensées
+Cluster 10 key words: ['man', 'shall', 'make', 'men', 'things']
+Cluster 10 contains 198 pensées
+Cluster 11 key words: ['true', 'men', 'god', 'good', 'false']
+Cluster 11 contains 51 pensées
+Cluster 12 key words: ['religion', 'christian', 'god', 'man', 'true']
+Cluster 12 contains 42 pensées
+
+## RANDOM STATE 4
+Cluster 0 key words: ['miracles', 'christ', 'jesus', 'god', 'believe']
+Cluster 0 contains 40 pensées
+Cluster 1 key words: ['jews', 'christ', 'jesus', 'messiah', 'foretold']
+Cluster 1 contains 50 pensées
+Cluster 2 key words: ['time', 'shall', 'god', 'man', 'known']
+Cluster 2 contains 41 pensées
+Cluster 3 key words: ['soul', 'things', 'different', 'body', 'man']
+Cluster 3 contains 67 pensées
+Cluster 4 key words: ['nature', 'man', 'thought', 'natural', 'world']
+Cluster 4 contains 38 pensées
+Cluster 5 key words: ['say', 'men', 'people', 'true', 'like']
+Cluster 5 contains 274 pensées
+Cluster 6 key words: ['god', 'men', 'man', 'love', 'true']
+Cluster 6 contains 91 pensées
+Cluster 7 key words: ['justice', 'power', 'men', 'fact', 'said']
+Cluster 7 contains 42 pensées
+Cluster 8 key words: ['christ', 'jesus', 'god', 'death', 'say']
+Cluster 8 contains 58 pensées
+Cluster 9 key words: ['religion', 'truth', 'true', 'christian', 'god']
+Cluster 9 contains 53 pensées
+Cluster 10 key words: ['reason', 'man', 'truth', 'follow', 'men']
+Cluster 10 contains 44 pensées
+Cluster 11 key words: ['happy', 'diversion', 'man', 'end', 'men']
+Cluster 11 contains 48 pensées
+Cluster 12 key words: ['man', 'know', 'nature', 'say', 'men']
+Cluster 12 contains 77 pensées
+
+## RANDOM STATE 5
+Cluster 0 key words: ['saint', 'augustine', 'order', 'truth', 'church']
+Cluster 0 contains 31 pensées
+Cluster 1 key words: ['according', 'live', 'world', 'god', 'difficult']
+Cluster 1 contains 36 pensées
+Cluster 2 key words: ['men', 'reason', 'man', 'true', 'nature']
+Cluster 2 contains 325 pensées
+Cluster 3 key words: ['religion', 'true', 'christian', 'god', 'man']
+Cluster 3 contains 42 pensées
+Cluster 4 key words: ['necessary', 'order', 'effect', 'prophecies', 'taken']
+Cluster 4 contains 40 pensées
+Cluster 5 key words: ['love', 'soul', 'know', 'good', 'body']
+Cluster 5 contains 59 pensées
+Cluster 6 key words: ['christ', 'jesus', 'god', 'death', 'jews']
+Cluster 6 contains 54 pensées
+Cluster 7 key words: ['shall', 'god', 'say', 'come', 'christ']
+Cluster 7 contains 62 pensées
+Cluster 8 key words: ['god', 'man', 'men', 'people', 'love']
+Cluster 8 contains 68 pensées
+Cluster 9 key words: ['people', 'man', 'like', 'judge', 'thought']
+Cluster 9 contains 76 pensées
+Cluster 10 key words: ['miracles', 'christ', 'god', 'jesus', 'believe']
+Cluster 10 contains 35 pensées
+Cluster 11 key words: ['foretold', 'messiah', 'greatness', 'time', 'christ']
+Cluster 11 contains 52 pensées
+Cluster 12 key words: ['man', 'pleasure', 'seek', 'thing', 'things']
+Cluster 12 contains 43 pensées

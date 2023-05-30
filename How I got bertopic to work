@@ -1,0 +1,11 @@
+following this tutorial
+https://python.plainenglish.io/topic-modeling-for-beginners-using-bertopic-and-python-aaf1b421afeb
+
+
+from this issue 
+https://github.com/MaartenGr/BERTopic/issues/112
+
+conda create -n pensees_conda2 python=3.9 numpy hdbscan pandas umap-learn scikit-learn tqdm sentence-transformers plotly==4.7.0 pyyaml
+conda activate pensees_conda2
+pip install bertopic
+pip install ipywidgets
