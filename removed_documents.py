@@ -11,5 +11,4 @@
     "754. Homo existens te Deum facit. 149\nScriptum est, Dii estis, et non potest solvi Scriptura. 150\nHaec infirmitas non est ad vitam et est ad mortem. 151\nLazarus dormit, et deinde dixit: Lazarus mortuus est. 152",
     "890. Tertullian: Nunquam Ecclesia reformabitur. 222",
     "901. Humilibus dat gratiam; 223 an ideo non dedit humilitatem? 224\nSui eum non receperunt; quotquot autem non receperunt, 225 an non erant sui? 226",
-
 ]
