@@ -64,7 +64,8 @@ for i, d in enumerate(clean_document_list):
         clean_document_list[i]["ind"] = clean_document_list[i]["ind"] - 1
 
 json_formatted_str = json.dumps(clean_document_list, indent=2)
-# print(json_formatted_str)
+
+# Test the ignored fragments
 for ii in [513, 514, 515, 923]:
     json_formatted_str = json.dumps(
         get_fragment_by_ind(clean_document_list, ii), indent=2
