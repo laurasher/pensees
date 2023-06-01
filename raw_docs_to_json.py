@@ -1,10 +1,26 @@
 import os, sys, json
+
 sys.path.append("..")
 from documents import document_list
 
-FRAGMENT_INDICES_TO_IGNORE = [514, 87, 193, 364, 776, 842, 90, 363, 551, 696, 754, 890, 901]
+FRAGMENT_INDICES_TO_IGNORE = [
+    514,
+    87,
+    193,
+    364,
+    776,
+    842,
+    90,
+    363,
+    551,
+    696,
+    754,
+    890,
+    901,
+]
 
 clean_document_list = []
+
 
 def get_fragment_by_ind(doc_list, ind):
     """
@@ -14,7 +30,8 @@ def get_fragment_by_ind(doc_list, ind):
         "text": str}, ...
     ]
     """
-    return [x for x in doc_list if x["ind"]==ind][0]
+    return [x for x in doc_list if x["ind"] == ind][0]
+
 
 def clean_doc(raw_doc):
     """
@@ -33,10 +50,8 @@ def clean_doc(raw_doc):
     ind = int(spl[0])
     if ind in FRAGMENT_INDICES_TO_IGNORE:
         return None
-    return {
-        "ind": ind,
-        "text": "".join(spl[1:len(spl)]).strip().replace("\n", ". ")
-    }
+    return {"ind": ind, "text": "".join(spl[1 : len(spl)]).strip().replace("\n", ". ")}
+
 
 for i, d in enumerate(document_list):
     cleaned = clean_doc(d)
@@ -46,10 +61,12 @@ for i, d in enumerate(document_list):
 # Now renumber for ignored fragments
 for i, d in enumerate(clean_document_list):
     if clean_document_list[i]["ind"] >= 514:
-        clean_document_list[i]["ind"] = clean_document_list[i]["ind"]-1
+        clean_document_list[i]["ind"] = clean_document_list[i]["ind"] - 1
 
 json_formatted_str = json.dumps(clean_document_list, indent=2)
 # print(json_formatted_str)
 for ii in [513, 514, 515, 923]:
-    json_formatted_str = json.dumps(get_fragment_by_ind(clean_document_list, ii), indent=2)
+    json_formatted_str = json.dumps(
+        get_fragment_by_ind(clean_document_list, ii), indent=2
+    )
     print(json_formatted_str)
