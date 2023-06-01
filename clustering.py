@@ -1,3 +1,5 @@
+import os, sys
+
 from __future__ import division
 import re
 import nltk
@@ -9,8 +11,6 @@ from nltk.stem.porter import PorterStemmer
 from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
 
-import os
-import sys
 
 sys.path.append("..")
 from documents import document_list
