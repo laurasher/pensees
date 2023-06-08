@@ -5,6 +5,8 @@ import json
 
 # import the dataset from sklearn
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 
@@ -96,6 +98,13 @@ vectorizer = TfidfVectorizer(sublinear_tf=True, min_df=5, max_df=0.95)
 # fit_transform applies TF-IDF to clean texts - we save the array of vectors in X
 X = vectorizer.fit_transform(df["cleaned"])
 
+pairwise_similarities = np.dot(X, X.T).toarray()
+pairwise_differences = euclidean_distances(X)
+
+print(pairwise_similarities)
+print(pairwise_similarities.shape)
+print(pairwise_differences)
+
 # X is the array of vectors that will be used to train the KMeans model
 from sklearn.cluster import KMeans
 
@@ -120,7 +129,7 @@ x1 = pca_vecs[:, 1]
 df["cluster"] = clusters
 df["x0"] = x0
 df["x1"] = x1
-df = df.replace(r'\n',' ', regex=True) 
+df = df.replace(r"\n", " ", regex=True)
 print(df)
 get_top_keywords(10)
 
@@ -130,19 +139,24 @@ print(df["cluster"].value_counts())
 cluster_map = {}
 
 for i in range(NUM_CLUSTERS):
-    cluster_map[i] = f"{i}" #if want to label
-    cluster_map[i] = i #if want to label
+    cluster_map[i] = f"{i}"  # if want to label
+    cluster_map[i] = i  # if want to label
 
 # apply mapping
 df["cluster"] = df["cluster"].map(cluster_map)
 df["fragment_number"] = df.index
 print(df[["corpus", "fragment_number", "cluster"]])
 
-j = json.loads(df[["corpus", "cluster", "fragment_number"]].to_json(orient="records"))
-print(json.dumps(j[0:2], indent=2))
+json_data = json.loads(
+    df[["corpus", "cluster", "fragment_number"]].to_json(orient="records")
+)
+for i, jj in enumerate(json_data):
+    json_data[i]["fragment_index"] = i
+    json_data[i]["sim_arr"] = pairwise_similarities[i].tolist()
+print(json.dumps(json_data[0:2], indent=2))
 file_path = "pensee_clusters.json"
 with open(file_path, "w", encoding="utf-8") as f:
-    json.dump(j, f, ensure_ascii=False)
+    json.dump(json_data, f, ensure_ascii=False)
 if PLOT:
     # set image size
     plt.figure(figsize=(12, 7))
