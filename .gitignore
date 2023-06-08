@@ -9,3 +9,4 @@ JHU*
 *.pptx
 *.pkl
 *.pickle
+**/node_modules
