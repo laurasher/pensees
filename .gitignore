@@ -7,3 +7,5 @@ bert_clusters/
 JHU*
 *.ppt
 *.pptx
+*.pkl
+*.pickle

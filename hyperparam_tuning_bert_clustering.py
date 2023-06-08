@@ -15,11 +15,6 @@ import matplotlib.pyplot as plt
 sys.path.append("..")
 from documents import document_list
 
-
-# NUM_CLUSTERS = 13
-NUM_CLUSTERS = 20
-K_MEANS_RANDOM_STATE = 20
-
 # From tutorial https://beckernick.github.io/law-clustering/
 raw_document_list = document_list.copy()
 
@@ -85,8 +80,8 @@ tfidf = TfidfVectorizer(tokenizer=tokenize, stop_words="english")
 # tfs should be a matrix, where each row represents a pensée and each column represents a token (word) in the corpus
 # document, word matrix (words from all combined words in corpus, corpus = document collection)
 tfs = tfidf.fit_transform(document_list)
-print(tfs)
-print(type(tfs))
+# print(tfs)
+# print(type(tfs))
 
 
 # Nearest neighbor function
