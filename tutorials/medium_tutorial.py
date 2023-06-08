@@ -120,7 +120,7 @@ x1 = pca_vecs[:, 1]
 df["cluster"] = clusters
 df["x0"] = x0
 df["x1"] = x1
-
+df = df.replace(r'\n',' ', regex=True) 
 print(df)
 get_top_keywords(10)
 
@@ -128,19 +128,21 @@ print(df["cluster"].value_counts())
 
 # map clusters to appropriate labels
 cluster_map = {}
-cluster_colors = {}
 
 for i in range(NUM_CLUSTERS):
-    cluster_map[i] = f"{i}"
+    cluster_map[i] = f"{i}" #if want to label
+    cluster_map[i] = i #if want to label
 
 # apply mapping
 df["cluster"] = df["cluster"].map(cluster_map)
-df["fragment_numer"] = df.index
-print(df[["corpus", "fragment_numer", "cluster"]])
+df["fragment_number"] = df.index
+print(df[["corpus", "fragment_number", "cluster"]])
 
-j = json.loads(df[["corpus", "cluster", "fragment_numer"]].to_json(orient="records"))
+j = json.loads(df[["corpus", "cluster", "fragment_number"]].to_json(orient="records"))
 print(json.dumps(j[0:2], indent=2))
-
+file_path = "pensee_clusters.json"
+with open(file_path, "w", encoding="utf-8") as f:
+    json.dump(j, f, ensure_ascii=False)
 if PLOT:
     # set image size
     plt.figure(figsize=(12, 7))
