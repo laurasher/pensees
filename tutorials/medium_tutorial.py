@@ -1,6 +1,7 @@
 # Tutorial link
 # https://medium.com/mlearning-ai/text-clustering-with-tf-idf-in-python-c94cd26a31e7
 import os, sys
+import json
 
 # import the dataset from sklearn
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -27,7 +28,7 @@ from documents import document_list
 
 PRELOAD_DF = True
 NUM_CLUSTERS = 10
-
+PLOT = False
 
 def preprocess_text(text: str, remove_stopwords: bool) -> str:
     """This utility function sanitizes a string by:
@@ -127,24 +128,26 @@ print(df["cluster"].value_counts())
 # map clusters to appropriate labels
 cluster_map = {}
 cluster_colors = {}
-# create color scale
-color_scale = spectra.scale(["blue", "red"])
-color_range = color_scale.range(NUM_CLUSTERS)
 
 for i in range(NUM_CLUSTERS):
-    cluster_map[i] = f"cluster {i}"
-    cluster_colors[i] = color_range[i].hexcode
+    cluster_map[i] = f"{i}"
 
 # apply mapping
 df["cluster"] = df["cluster"].map(cluster_map)
+df["fragment_numer"] = df.index
+print(df[['corpus', 'fragment_numer', 'cluster']])
 
-# set image size
-plt.figure(figsize=(12, 7))
-# set a title
-plt.title(f"TF-IDF + KMeans Num clusteres {NUM_CLUSTERS}", fontdict={"fontsize": 18})
-# set axes names
-plt.xlabel("X0", fontdict={"fontsize": 16})
-plt.ylabel("X1", fontdict={"fontsize": 16})
-# create scatter plot with seaborn, where hue is the class used to group the data
-sns.scatterplot(data=df, x="x0", y="x1", hue="cluster", palette="tab10", size=2)
-plt.show()
+j = json.loads(df[['corpus', 'cluster', 'fragment_numer']].to_json(orient="records"))
+print(json.dumps(j[0:2], indent=2))
+
+if PLOT:
+    # set image size
+    plt.figure(figsize=(12, 7))
+    # set a title
+    plt.title(f"TF-IDF + KMeans Num clusteres {NUM_CLUSTERS}", fontdict={"fontsize": 18})
+    # set axes names
+    plt.xlabel("X0", fontdict={"fontsize": 16})
+    plt.ylabel("X1", fontdict={"fontsize": 16})
+    # create scatter plot with seaborn, where hue is the class used to group the data
+    sns.scatterplot(data=df, x="x0", y="x1", hue="cluster", palette="tab10", size=2)
+    plt.show()  
