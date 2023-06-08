@@ -113,7 +113,7 @@ try:
     f.close()
     print(topic_info_df)
     input()
-    
+
     if PLOTTING:
         fig1 = topic_model.visualize_topics()
         fig1.update_layout(
