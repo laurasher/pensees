@@ -144,6 +144,8 @@ for i in range(NUM_CLUSTERS):
 
 # apply mapping
 df["cluster"] = df["cluster"].map(cluster_map)
+# fragment number is what is reflected in the BOOK itself
+# fragment index is the 0-indexed array index
 df["fragment_number"] = df.index
 print(df[["corpus", "fragment_number", "cluster"]])
 

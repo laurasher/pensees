@@ -1,11 +1,10 @@
-<div class="title">
-</div>
-<div class="content">
-    <h1>{{ title }}</h1>
-    <h2>{{ subtitle }}</h2>
-    <h3>{{ paragraph }}</h3>
-    <div class="chartContainer">
-        <svg #chart class="chart"></svg>
-        <div class="tooltip"></div>
+<div class="main-page-content">
+    <div id=titles-top-half>
+        <h1>{{ title }}</h1>
+        <h2>{{ subtitle }}</h2>
+    </div>
+    <div id=charts-bottom-half>
+        <app-lite-brite-chart class="column"></app-lite-brite-chart>
+        <app-pensees-display  class="column"></app-pensees-display>
     </div>
 </div>
