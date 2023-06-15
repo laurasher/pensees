@@ -129,7 +129,7 @@ x1 = pca_vecs[:, 1]
 df["cluster"] = clusters
 df["x0"] = x0
 df["x1"] = x1
-df = df.replace(r"\n", " ", regex=True)
+# df = df.replace(r"\n", " ", regex=True)
 print(df)
 get_top_keywords(10)
 
@@ -169,7 +169,7 @@ for i, jj in enumerate(json_data):
     json_data[i]["row"] = row
     col = col + 1
 
-print(json.dumps(json_data, indent=2))
+print(json.dumps(json_data[0:2], indent=2))
 file_path = "pensee_clusters.json"
 with open(file_path, "w", encoding="utf-8") as f:
     json.dump(json_data, f, ensure_ascii=False)
