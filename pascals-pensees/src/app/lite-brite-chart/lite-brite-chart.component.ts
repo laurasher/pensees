@@ -105,6 +105,9 @@ export class LiteBriteChartComponent implements OnInit {
         .attr('y', (d: any, i: any) => d.row*(this.adjustHeight+this.squareBuffer))
         .attr('width',  this.adjustWidth)
         .attr('height', this.adjustHeight)
+        .attr("fill", "white")
+        .attr("stroke", "white")
+        .transition(d3.transition(), 100)
         .attr("fill", (d: any) => cluster_color_map[d.cluster])
         .attr("stroke", (d: any) => cluster_color_map[d.cluster])
 
@@ -145,11 +148,11 @@ export class LiteBriteChartComponent implements OnInit {
           .on("dblclick", function (this: any, _event: any, _d: any) {
             d3.selectAll(".lites")
               .data(_d.sim_arr)
+              .transition(d3.transition())
               .attr("fill", cluster_color_map[_d.cluster])
               .attr("fill-opacity", (d: any) => d)
               .style("stroke-opacity", (d: any) => d)
               .style("stroke-color", cluster_color_map[_d.cluster])
-              .transition()
           })
 
   }
