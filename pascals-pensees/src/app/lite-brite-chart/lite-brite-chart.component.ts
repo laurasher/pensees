@@ -45,18 +45,30 @@ export class LiteBriteChartComponent implements OnInit {
   private tooltip: any;
   private textviewer: any;
   private cluster_color_map: any =  {
-    1 : "#543005",
-    2 : "#8c510a",
-    3 : "#bf812d",
-    4 : "#dfc27d",
-    5 : "#f6e8c3",
-    6 : "#f5f5f5",
-    7 : "#c7eae5",
-    8 : "#80cdc1",
-    9 : "#35978f",
-    10 : "#01665e",
-    11 : "#003c30",
+    0 : "#a6cee3",
+    1 : "#1f78b4",
+    2 : "#b2df8a",
+    3 : "#33a02c",
+    4 : "#fb9a99",
+    5 : "#e31a1c",
+    6 : "#fdbf6f",
+    7 : "#ff7f00",
+    8 : "#cab2d6",
+    9 : "#6a3d9a",
   }
+  //alternate
+  /*
+  #543005
+  #8c510a
+  #bf812d
+  #dfc27d
+  #f6e8c3
+  #c7eae5
+  #80cdc1
+  #35978f
+  #01665e
+  #003c30
+  */
   constructor() {}
 
   ngOnInit(){
