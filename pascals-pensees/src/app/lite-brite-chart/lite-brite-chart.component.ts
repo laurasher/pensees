@@ -128,7 +128,7 @@ export class LiteBriteChartComponent implements OnInit {
             .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
             .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
             .style('display', 'block').style('opacity', 0.99)
-            .html(`cluster: ${d.target.__data__['cluster']}<br>index: ${d.target.__data__['fragment_index']}<br>row: ${d.target.__data__['row']}<br>col: ${d.target.__data__['col']}`);
+            .html(`cluster: ${d.target.__data__['cluster']}<br>number: ${d.target.__data__['fragment_number']}<br>index: ${d.target.__data__['fragment_index']}<br>row: ${d.target.__data__['row']}<br>col: ${d.target.__data__['col']}`);
           textviewer
             .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
             .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
