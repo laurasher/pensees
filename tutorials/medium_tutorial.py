@@ -162,12 +162,12 @@ for i, jj in enumerate(json_data):
     # json_data[i]["corpus"] = ""
     json_data[i]["fragment_index"] = i
     json_data[i]["sim_arr"] = pairwise_similarities[i].tolist()
-    if (i+1)%numcols==0:
-        col=0
-        row=row+1
+    if (i + 1) % numcols == 0:
+        col = 0
+        row = row + 1
     json_data[i]["col"] = col
     json_data[i]["row"] = row
-    col=col+1
+    col = col + 1
 
 print(json.dumps(json_data, indent=2))
 file_path = "pensee_clusters.json"
