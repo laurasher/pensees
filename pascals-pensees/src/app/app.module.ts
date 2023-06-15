@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { LiteBriteChartComponent } from './lite-brite-chart/lite-brite-chart.component';
 import { PenseesDisplayComponent } from './pensees-display/pensees-display.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { PenseesDisplayComponent } from './pensees-display/pensees-display.compo
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    NoopAnimationsModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

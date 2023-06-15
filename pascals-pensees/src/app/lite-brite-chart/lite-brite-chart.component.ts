@@ -1,18 +1,12 @@
 import { Component, ElementRef, Input, OnInit, OnChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
 
 import * as d3 from 'd3';
 import * as d3Select from 'd3-selection';
-import * as d3Scale from 'd3-scale';
-import * as d3Array from 'd3-array';
-import * as d3Axis from 'd3-axis';
-import {transition} from 'd3-transition';
 
 import { FragmentInterface } from '../fragment';
 
-// resizable chart angulor tutorial https://medium.com/@jeanphilippelemieux/creating-a-responsive-graph-with-angular-and-d3-b45bb8065588
+// resizable chart angular tutorial https://medium.com/@jeanphilippelemieux/creating-a-responsive-graph-with-angular-and-d3-b45bb8065588
 
 @Component({
   selector: 'app-lite-brite-chart',
@@ -20,8 +14,6 @@ import { FragmentInterface } from '../fragment';
   styleUrls: ['./lite-brite-chart.component.less']
 })
 export class LiteBriteChartComponent implements OnInit {
-  
-  // @ViewChild("chart", { static: true }) protected chartContainer!: ElementRef;
 
   @ViewChild('chart')
   private chartContainer: ElementRef;
@@ -54,26 +46,15 @@ export class LiteBriteChartComponent implements OnInit {
     8 : "#cab2d6",
     9 : "#6a3d9a",
   }
-  //alternate
-  /*
-  #543005
-  #8c510a
-  #bf812d
-  #dfc27d
-  #f6e8c3
-  #c7eae5
-  #80cdc1
-  #35978f
-  #01665e
-  #003c30
-  */
+  NEEDS_RESET: boolean = false;
+
   constructor() {}
 
   ngOnInit(){
     this.tooltip = d3.select('#container') // or d3.select('#bar')
       .append('div').attr('class', 'tooltip').style('display', 'none').style('opacity', 0);
     this.textviewer = d3.select('#text-viewer')
-      .append('div').attr('class', 'text-viewer').style('display', 'none').style('opacity', 0);
+      .append('div').attr('class', 'text-viewer');
   };
 
   ngOnChanges(): void {
@@ -101,7 +82,6 @@ export class LiteBriteChartComponent implements OnInit {
 
     this.contentWidth = this.width - this.margin.left - this.margin.right;
     this.contentHeight = this.height - this.margin.top - this.margin.bottom;
-    // this.adjustWidth = this.width/(44);
     this.adjustWidth = this.contentWidth/44;
     this.adjustHeight = this.contentHeight/21;
 
@@ -114,54 +94,75 @@ export class LiteBriteChartComponent implements OnInit {
     const tooltip = d3.select('.tooltip')
       .style('display', 'none').style('opacity', 0);
 
-    const textviewer = d3.select('.text-viewer')
-      .style('display', 'none').style('opacity', 0);
+    const textviewer = d3.select('.text-viewer');
 
     this.g.selectAll("lites")
       .data(this.data)
       .enter()
       .append("rect")
+        .attr("class", "lites")
         .attr('x', (d: any, i: any) => d.col*(this.adjustWidth+this.squareBuffer))
         .attr('y', (d: any, i: any) => d.row*(this.adjustHeight+this.squareBuffer))
         .attr('width',  this.adjustWidth)
         .attr('height', this.adjustHeight)
         .attr("fill", (d: any) => cluster_color_map[d.cluster])
         .attr("stroke", (d: any) => cluster_color_map[d.cluster])
-        .on("mouseover", function (this: any, d: any) {
-          d3Select.select(this)
-            .style("stroke", "red")
-            // .style("stroke-weight", "10px")
-          tooltip
-            .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
-            .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
-            .style('display', 'block').style('opacity', 0.99)
-            .html(`cluster: ${d.target.__data__['cluster']}<br>number: ${d.target.__data__['fragment_number']}<br>index: ${d.target.__data__['fragment_index']}<br>row: ${d.target.__data__['row']}<br>col: ${d.target.__data__['col']}`);
-          // textviewer
-          //   .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
-          //   .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
-          //   .style('display', 'block').style('opacity', 0.99)
-          //   .html(`${d.target.__data__['corpus']}`);
-        })
-        .on("click", function (this: any, d: any) {
-          textviewer
-            .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
-            .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
-            .style('display', 'block').style('opacity', 0.99)
-            .html(`${d.target.__data__['corpus']}`);
-        })
-        .on("mouseout", function (this: any) {
-          d3Select.select(this)
-            .style("stroke", function (d: any) {
-              return cluster_color_map[d.cluster];
-              })
-          tooltip
-            .style('display', 'none').style('opacity', 0);
-          // textviewer
-          //   .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
-          //   .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
-          //   .style('display', 'block').style('opacity', 0.99)
-          //   .html(``);
-        })
-  }
 
+    this.g.selectAll("lites-overlay")
+      .data(this.data)
+        .enter()
+        .append("rect")
+          .attr("class", "lites-overlay")
+          .attr('x', (d: any, i: any) => d.col*(this.adjustWidth+this.squareBuffer))
+          .attr('y', (d: any, i: any) => d.row*(this.adjustHeight+this.squareBuffer))
+          .attr('width',  this.adjustWidth)
+          .attr('height', this.adjustHeight)
+          .attr("fill", "white")
+          .attr("fill-opacity", 0)
+          .on("dblclick", function (this: any, _event: any, _d: any) {
+            d3.selectAll(".lites-overlay")
+            .attr("fill-opacity", 0)
+          })
+          .on("mouseover", function (this: any, _event: any, d:any) {
+            d3Select.select(this)
+              // .style("stroke", "red")
+            tooltip
+              .style('top', (_event.layerY + 15) + 'px').style('left', (_event.layerX) + 'px')
+              .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
+              .style('display', 'block').style('opacity', 0.99)
+              .html(`cluster: ${_event.target.__data__['cluster']}<br>number: ${_event.target.__data__['fragment_number']}<br>index: ${_event.target.__data__['fragment_index']}<br>row: ${_event.target.__data__['row']}<br>col: ${_event.target.__data__['col']}`);
+          })
+          .on("mouseout", function (this: any) {
+            d3Select.select(this)
+              // .style("stroke", function (d: any) {return cluster_color_map[d.cluster];})
+            tooltip
+              .style('display', 'none').style('opacity', 0);
+          })
+          .on("click", function (this: any, _event: any, _d: any) {
+            textviewer
+              .html(`${_d.corpus}`);
+          })
+          .on("dblclick", function (this: any, _event: any, _d: any) {
+            d3.selectAll(".lites")
+              .data(_d.sim_arr)
+              .attr("fill", cluster_color_map[_d.cluster])
+              .attr("fill-opacity", (d: any) => d)
+              .style("stroke-opacity", (d: any) => d)
+              .style("stroke-color", cluster_color_map[_d.cluster])
+              .transition()
+          })
+
+  }
+  public refreshLiteBrites(){
+    d3.select('svg').remove();
+    this.buildSvg();
+    this.drawLites();
+    d3.select('.text-viewer').html(``);
+  }
+  public refreshLiteBritesChart(){
+    d3.select('svg').remove();
+    this.buildSvg();
+    this.drawLites();
+    // d3.select('.text-viewer').html(``);
+  }
 }

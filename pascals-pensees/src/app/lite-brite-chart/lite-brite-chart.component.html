@@ -1,7 +1,9 @@
 <div id="container">
+    <!-- <mat-icon class="search-icon">search</mat-icon> -->
+    <mat-icon id="refresh-icon" (click)="refreshLiteBrites()">refresh</mat-icon>
     <div class="tooltip"></div>
     <div id="subcontainer">
         <div #chart id="chart"></div>
-        <div id="text-viewer"></div>
+        <div id="text-viewer" (click)="refreshLiteBrites()"></div>
     </div>
 </div>
