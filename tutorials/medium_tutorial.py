@@ -152,10 +152,24 @@ print(df[["corpus", "fragment_number", "cluster"]])
 json_data = json.loads(
     df[["corpus", "cluster", "fragment_number"]].to_json(orient="records")
 )
+
+numrows = 22
+numcols = 44
+
+row = 0
+col = 0
 for i, jj in enumerate(json_data):
+    # json_data[i]["corpus"] = ""
     json_data[i]["fragment_index"] = i
     json_data[i]["sim_arr"] = pairwise_similarities[i].tolist()
-print(json.dumps(json_data[0:2], indent=2))
+    if (i+1)%numcols==0:
+        col=0
+        row=row+1
+    json_data[i]["col"] = col
+    json_data[i]["row"] = row
+    col=col+1
+
+print(json.dumps(json_data, indent=2))
 file_path = "pensee_clusters.json"
 with open(file_path, "w", encoding="utf-8") as f:
     json.dump(json_data, f, ensure_ascii=False)
