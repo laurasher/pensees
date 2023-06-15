@@ -2,11 +2,29 @@
   height: 100%;
   width: 100%;
 }
+#subcontainer {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  grid-template-columns: 66% 30%; /*100-2-2=96*/
+  // grid-template-columns: 100%; /*100-2-2=96*/
+  grid-column-gap: 2%;
+}
+svg {
+  margin-right: 0px;
+}
 #chart {
   overflow: inherit;
   height: 100%;
   width: 100%;
-  // outline: 5px dotted green;
+  // width: 66%;
+  outline: 5px dotted green;
+}
+#text-viewer {
+  outline: 5px dotted red;
+  height: 100%;
+  // width: 30%;
+  width: 100%;
 }
 .tooltip {
   position: absolute;

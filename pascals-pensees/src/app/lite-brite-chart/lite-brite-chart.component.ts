@@ -43,6 +43,7 @@ export class LiteBriteChartComponent implements OnInit {
   private g: any;
   private svg: any;
   private tooltip: any;
+  private textviewer: any;
   private cluster_color_map: any =  {
     1 : "#543005",
     2 : "#8c510a",
@@ -59,8 +60,10 @@ export class LiteBriteChartComponent implements OnInit {
   constructor() {}
 
   ngOnInit(){
-      this.tooltip = d3.select('#container') // or d3.select('#bar')
-        .append('div').attr('class', 'tooltip').style('display', 'none').style('opacity', 0);
+    this.tooltip = d3.select('#container') // or d3.select('#bar')
+      .append('div').attr('class', 'tooltip').style('display', 'none').style('opacity', 0);
+    this.textviewer = d3.select('#text-viewer')
+      .append('div').attr('class', 'text-viewer').style('display', 'none').style('opacity', 0);
   };
 
   ngOnChanges(): void {
@@ -99,6 +102,9 @@ export class LiteBriteChartComponent implements OnInit {
     const tooltip = d3.select('.tooltip')
       .style('display', 'none').style('opacity', 0);
 
+    const textviewer = d3.select('.text-viewer')
+      .style('display', 'none').style('opacity', 0);
+
     this.g.selectAll("lites")
       .data(this.data)
       .enter()
@@ -123,12 +129,22 @@ export class LiteBriteChartComponent implements OnInit {
             .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
             .style('display', 'block').style('opacity', 0.99)
             .html(`cluster: ${d.target.__data__['cluster']}<br>index: ${d.target.__data__['fragment_index']}<br>row: ${d.target.__data__['row']}<br>col: ${d.target.__data__['col']}`);
+          textviewer
+            .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
+            .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
+            .style('display', 'block').style('opacity', 0.99)
+            .html(`${d.target.__data__['corpus']}`);
         })
         .on("mouseout", function (this: any, d: any) {
           d3Select.select(this)
             .style("stroke-opacity", 0)
           tooltip
             .style('display', 'none').style('opacity', 0);
+          textviewer
+            .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
+            .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
+            .style('display', 'block').style('opacity', 0.99)
+            .html(``);
         })
   }
 
