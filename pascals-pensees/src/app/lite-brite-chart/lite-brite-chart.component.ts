@@ -107,7 +107,7 @@ export class LiteBriteChartComponent implements OnInit {
         .attr('height', this.adjustHeight)
         .attr("fill", "white")
         .attr("stroke", "white")
-        .transition(d3.transition(), 100)
+        .transition(d3.transition(), 40000)
         .attr("fill", (d: any) => cluster_color_map[d.cluster])
         .attr("stroke", (d: any) => cluster_color_map[d.cluster])
 
