@@ -27,9 +27,7 @@ export class LiteBriteChartComponent implements OnInit {
   private chartContainer: ElementRef;
   @Input() data: FragmentInterface | null = null;
 
-  private penseeClusterData: any = [];
   private square: number = 10;
-  // private squareBuffer: number = this.square/4;
   private squareBuffer: number = 0;
   private url: string = '/assets/pensee_clusters.json';
 
@@ -111,6 +109,8 @@ export class LiteBriteChartComponent implements OnInit {
               .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
   }
   private drawLites() {
+    const cluster_color_map = this.cluster_color_map;
+
     const tooltip = d3.select('.tooltip')
       .style('display', 'none').style('opacity', 0);
 
@@ -125,8 +125,8 @@ export class LiteBriteChartComponent implements OnInit {
         .attr('y', (d: any, i: any) => d.row*(this.adjustHeight+this.squareBuffer))
         .attr('width',  this.adjustWidth)
         .attr('height', this.adjustHeight)
-        .attr("fill", (d: any) => this.cluster_color_map[d.cluster])
-        .attr("stroke", (d: any) => this.cluster_color_map[d.cluster])
+        .attr("fill", (d: any) => cluster_color_map[d.cluster])
+        .attr("stroke", (d: any) => cluster_color_map[d.cluster])
         .on("mouseover", function (this: any, d: any) {
           d3Select.select(this)
             .style("stroke", "red")
@@ -149,9 +149,11 @@ export class LiteBriteChartComponent implements OnInit {
             .style('display', 'block').style('opacity', 0.99)
             .html(`${d.target.__data__['corpus']}`);
         })
-        .on("mouseout", function (this: any, d: any) {
+        .on("mouseout", function (this: any) {
           d3Select.select(this)
-            .style("stroke-opacity", 0)
+            .style("stroke", function (d: any) {
+              return cluster_color_map[d.cluster];
+              })
           tooltip
             .style('display', 'none').style('opacity', 0);
           // textviewer
