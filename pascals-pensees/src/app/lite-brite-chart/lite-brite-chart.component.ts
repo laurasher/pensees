@@ -121,17 +121,12 @@ export class LiteBriteChartComponent implements OnInit {
       .data(this.data)
       .enter()
       .append("rect")
-        // .attr('x', (d: any, i: any) => d.col*(this.square+this.squareBuffer))
-        // .attr('y', (d: any, i: any) => d.row*(this.square+this.squareBuffer))
         .attr('x', (d: any, i: any) => d.col*(this.adjustWidth+this.squareBuffer))
         .attr('y', (d: any, i: any) => d.row*(this.adjustHeight+this.squareBuffer))
-        // .attr("width", this.square)
         .attr('width',  this.adjustWidth)
         .attr('height', this.adjustHeight)
         .attr("fill", (d: any) => this.cluster_color_map[d.cluster])
-        // .attr("opacity", function (d: any, i: any) {
-        //   return d[""];
-        //   })
+        .attr("stroke", (d: any) => this.cluster_color_map[d.cluster])
         .on("mouseover", function (this: any, d: any) {
           d3Select.select(this)
             .style("stroke", "red")
@@ -141,6 +136,13 @@ export class LiteBriteChartComponent implements OnInit {
             .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
             .style('display', 'block').style('opacity', 0.99)
             .html(`cluster: ${d.target.__data__['cluster']}<br>number: ${d.target.__data__['fragment_number']}<br>index: ${d.target.__data__['fragment_index']}<br>row: ${d.target.__data__['row']}<br>col: ${d.target.__data__['col']}`);
+          // textviewer
+          //   .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
+          //   .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
+          //   .style('display', 'block').style('opacity', 0.99)
+          //   .html(`${d.target.__data__['corpus']}`);
+        })
+        .on("click", function (this: any, d: any) {
           textviewer
             .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
             .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
@@ -152,11 +154,11 @@ export class LiteBriteChartComponent implements OnInit {
             .style("stroke-opacity", 0)
           tooltip
             .style('display', 'none').style('opacity', 0);
-          textviewer
-            .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
-            .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
-            .style('display', 'block').style('opacity', 0.99)
-            .html(``);
+          // textviewer
+          //   .style('top', (d.layerY + 15) + 'px').style('left', (d.layerX) + 'px')
+          //   .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
+          //   .style('display', 'block').style('opacity', 0.99)
+          //   .html(``);
         })
   }
 
