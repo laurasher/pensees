@@ -1,10 +1,24 @@
 .main-page-content {
     display: flex; /* or inline-flex */
     flex-direction: column;
+    height: 90vh;
 }
-#charts-bottom-half{
+#main-page-title {
+    font-family: adso, sans-serif;
+    font-weight: 200 !important;
+    font-style: italic;
+    font-size: 2.5vw;
+    margin: 0;
+}
+#main-page-subtitle {
+    font-family: "Effra Lt";
+    font-size: 0.9vw;
+    margin-top: 0;
+    margin-bottom: 2vw;
+}
+#charts-bottom-half {
     display: grid;
     grid-template-columns: 66% 30%; /*100-2-2=96*/
     grid-column-gap: 2%;
-    height: 90%;
+    height: 100%;
 }

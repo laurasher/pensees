@@ -1,10 +1,11 @@
+<link rel="stylesheet" href="https://use.typekit.net/pjc2sqf.css">
 <div class="main-page-content">
     <div id=titles-top-half>
-        <h1>{{ title }}</h1>
-        <h2>{{ subtitle }}</h2>
+        <p id="main-page-title">{{ title }}</p>
+        <p id="main-page-subtitle">{{ subtitle }}</p>
     </div>
     <div id=charts-bottom-half>
-        <app-lite-brite-chart class="column"></app-lite-brite-chart>
+        <app-lite-brite-chart [data]="data | async" class="column"></app-lite-brite-chart>
         <app-pensees-display  class="column"></app-pensees-display>
     </div>
 </div>
