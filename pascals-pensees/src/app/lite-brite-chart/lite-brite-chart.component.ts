@@ -84,6 +84,7 @@ export class LiteBriteChartComponent implements OnInit {
     this.contentHeight = this.height - this.margin.top - this.margin.bottom;
     this.adjustWidth = this.contentWidth/44;
     this.adjustHeight = this.contentHeight/21;
+    // this.adjustHeight = this.adjustWidth;
 
     this.g = this.svg.append("g")
               .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
