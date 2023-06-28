@@ -15,6 +15,6 @@ export class AppComponent {
   data: Observable<FragmentInterface>;
 
   constructor(private http: HttpClient) {
-    this.data = this.http.get<FragmentInterface>('/assets/pensee_clusters.json');
+    this.data = this.http.get<FragmentInterface>('../assets/pensee_clusters.json');
   }
 }

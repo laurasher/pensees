@@ -22,7 +22,6 @@ export class LiteBriteChartComponent implements OnInit {
   public message = "Click colored boxes to see pensées text. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset the lite-brite chart."
   private square: number = 10;
   private squareBuffer: number = 0;
-  private url: string = '/assets/pensee_clusters.json';
 
   private margin = {top: 0, right: 0, bottom: 0, left: 0};
   private width: number = 0;
