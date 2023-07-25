@@ -1,5 +1,6 @@
 import { Component, ElementRef, Input, OnInit, OnChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 // import * as _ from 'lodash';
+import { FormControl } from '@angular/forms';
 
 import * as d3 from 'd3';
 import * as d3Select from 'd3-selection';
@@ -18,6 +19,9 @@ export class LiteBriteChartComponent implements OnInit {
   @ViewChild('chart')
   private chartContainer: ElementRef;
   @Input() data: FragmentInterface | null = null;
+
+  public filterBy: string = '';
+  filterControl = new FormControl();
 
   public message = "Click colored boxes to see pensées text. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset the lite-brite chart."
   private square: number = 10;
