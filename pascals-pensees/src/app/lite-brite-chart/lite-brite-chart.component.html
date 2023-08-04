@@ -1,8 +1,8 @@
 <div id="container">
-    <mat-form-field class="pensees-search" appearance="fill">
+    <!-- <mat-form-field class="pensees-search" appearance="fill">
       <mat-label>Search pensées text</mat-label>
       <input type="text" matInput [(ngModel)]="filterBy">
-    </mat-form-field>
+    </mat-form-field> -->
     <!-- <mat-icon class="search-icon">search</mat-icon> -->
     <mat-icon id="refresh-icon" (click)="refreshLiteBrites()">refresh</mat-icon>
     <div class="tooltip"></div>
@@ -10,5 +10,4 @@
         <div #chart id="chart"></div>
         <div id="text-viewer" (click)="refreshLiteBrites()"><i>{{message}}</i><br><br></div>
     </div>
-    <tr id="retention-table" *ngFor="let d of data | filter:filterBy">
 </div>

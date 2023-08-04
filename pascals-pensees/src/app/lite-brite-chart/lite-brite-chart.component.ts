@@ -38,17 +38,29 @@ export class LiteBriteChartComponent implements OnInit {
   private svg: any;
   private tooltip: any;
   private textviewer: any;
+  // private cluster_color_map: any =  {
+  //   0 : "#a6cee3",
+  //   1 : "#1f78b4",
+  //   2 : "#b2df8a",
+  //   3 : "#33a02c",
+  //   4 : "#fb9a99",
+  //   5 : "#e31a1c",
+  //   6 : "#fdbf6f",
+  //   7 : "#ff7f00",
+  //   8 : "#cab2d6",
+  //   9 : "#6a3d9a",
+  // }
   private cluster_color_map: any =  {
-    0 : "#a6cee3",
-    1 : "#1f78b4",
-    2 : "#b2df8a",
-    3 : "#33a02c",
-    4 : "#fb9a99",
-    5 : "#e31a1c",
-    6 : "#fdbf6f",
-    7 : "#ff7f00",
-    8 : "#cab2d6",
-    9 : "#6a3d9a",
+    0 : "#D3BCBC",
+    1 : "#DA6627",
+    2 : "#08332C",
+    3 : "#4D7F71",
+    4 : "#3A4D22",
+    5 : "#B39530",
+    6 : "#EADB9F",
+    7 : "#604F5B",
+    8 : "#937F7F",
+    9 : "#3F5450",
   }
   NEEDS_RESET: boolean = false;
 
@@ -136,7 +148,7 @@ export class LiteBriteChartComponent implements OnInit {
               // .style("stroke", "red")
             tooltip
               .style('top', (_event.layerY + 15) + 'px').style('left', (_event.layerX) + 'px')
-              .style('background', function (this: any) {return 1 ? "white" : "#FFFCE0";})
+              .style('background', function (this: any) {return 1 ? "black" : "#FFFCE0";})
               .style('display', 'block').style('opacity', 0.99)
               .html(`cluster: ${_event.target.__data__['cluster']}<br>number: ${_event.target.__data__['fragment_number']}<br>index: ${_event.target.__data__['fragment_index']}<br>row: ${_event.target.__data__['row']}<br>col: ${_event.target.__data__['col']}`);
           })
@@ -151,12 +163,14 @@ export class LiteBriteChartComponent implements OnInit {
               .html(`${_d.corpus}`);
           })
           .on("dblclick", function (this: any, _event: any, _d: any) {
+            console.log(_d.sim_arr);
+            console.log(Math.log(0.05806600723043625));
             d3.selectAll(".lites")
               .data(_d.sim_arr)
               .transition(d3.transition())
               .attr("fill", cluster_color_map[_d.cluster])
-              .attr("fill-opacity", (d: any) => d)
-              .style("stroke-opacity", (d: any) => d)
+              .attr("fill-opacity", (d: any) =>  d*10)
+              .style("stroke-opacity", (d: any) => d*10)
               .style("stroke-color", cluster_color_map[_d.cluster])
           })
 
