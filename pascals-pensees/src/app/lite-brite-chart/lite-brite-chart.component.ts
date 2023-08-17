@@ -148,7 +148,8 @@ export class LiteBriteChartComponent implements OnInit {
               // .style("stroke", "red")
             tooltip
               .style('top', (_event.layerY + 15) + 'px').style('left', (_event.layerX) + 'px')
-              .style('background', function (this: any) {return 1 ? "black" : "#FFFCE0";})
+              // .style('background', function (this: any) {return 1 ? "black" : "#FFFCE0";})
+              .style('background', "#f0e3d0")
               .style('display', 'block').style('opacity', 0.99)
               .html(`cluster: ${_event.target.__data__['cluster']}<br>number: ${_event.target.__data__['fragment_number']}<br>index: ${_event.target.__data__['fragment_index']}<br>row: ${_event.target.__data__['row']}<br>col: ${_event.target.__data__['col']}`);
           })
