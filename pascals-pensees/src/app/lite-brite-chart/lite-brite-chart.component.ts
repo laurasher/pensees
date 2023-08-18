@@ -1,5 +1,4 @@
 import { Component, ElementRef, Input, OnInit, OnChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-// import * as _ from 'lodash';
 import { FormControl } from '@angular/forms';
 
 import * as d3 from 'd3';
@@ -24,32 +23,26 @@ export class LiteBriteChartComponent implements OnInit {
   filterControl = new FormControl();
 
   public message = "Click colored boxes to see pensées text. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset the lite-brite chart."
+  // public message = ""
   private square: number = 10;
   private squareBuffer: number = 0;
 
+  private NUM_CLUSTERS = 10;
   private margin = {top: 0, right: 0, bottom: 0, left: 0};
   private width: number = 0;
+  private scatter_svg_width: number = 0;
+  private scatter_svg_height: number = 0;
   private height: number = 0;
   private contentWidth: number = 0;
   private adjustWidth: number = 0;
   private adjustHeight: number = 0;
   private contentHeight: number = 0;
   private g: any;
+  private scatter_svg_g: any;
   private svg: any;
+  private scatter_svg: any;
   private tooltip: any;
   private textviewer: any;
-  // private cluster_color_map: any =  {
-  //   0 : "#a6cee3",
-  //   1 : "#1f78b4",
-  //   2 : "#b2df8a",
-  //   3 : "#33a02c",
-  //   4 : "#fb9a99",
-  //   5 : "#e31a1c",
-  //   6 : "#fdbf6f",
-  //   7 : "#ff7f00",
-  //   8 : "#cab2d6",
-  //   9 : "#6a3d9a",
-  // }
   private cluster_color_map: any =  {
     0 : "#D3BCBC",
     1 : "#DA6627",
@@ -62,7 +55,6 @@ export class LiteBriteChartComponent implements OnInit {
     8 : "#937F7F",
     9 : "#3F5450",
   }
-  NEEDS_RESET: boolean = false;
 
   constructor() {}
 
@@ -86,6 +78,10 @@ export class LiteBriteChartComponent implements OnInit {
         .attr('width', element.offsetWidth)
         .attr('height', element.offsetHeight);
 
+    this.scatter_svg = d3.select("#cluster-scatterplot").append('svg').attr("height", "100%").attr("width", "100%");
+    this.scatter_svg_width = +this.scatter_svg.style("width").replace("px", "") - 20;
+    this.scatter_svg_height = +this.scatter_svg.style("height").replace("px", "") - 20;
+
     this.margin = {
       top: +this.svg.style("margin-top").replace("px", ""),
       right: +this.svg.style("margin-right").replace("px", ""),
@@ -100,18 +96,17 @@ export class LiteBriteChartComponent implements OnInit {
     this.contentHeight = this.height - this.margin.top - this.margin.bottom;
     this.adjustWidth = this.contentWidth/44;
     this.adjustHeight = this.contentHeight/21;
-    // this.adjustHeight = this.adjustWidth;
 
-    this.g = this.svg.append("g")
-              .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+    this.g = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+    this.scatter_svg_g = this.scatter_svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
   }
   private drawLites() {
     const cluster_color_map = this.cluster_color_map;
-
     const tooltip = d3.select('.tooltip')
       .style('display', 'none').style('opacity', 0);
-
     const textviewer = d3.select('.text-viewer');
+    const scatter = this.scatter_svg_g;
 
     this.g.selectAll("lites")
       .data(this.data)
@@ -128,6 +123,30 @@ export class LiteBriteChartComponent implements OnInit {
         .attr("fill", (d: any) => cluster_color_map[d.cluster])
         .attr("stroke", (d: any) => cluster_color_map[d.cluster])
 
+    let x = d3.scaleLinear()
+      .domain([-0.45, 0.45])
+      .range([ 0, this.scatter_svg_width ]);
+    let y = d3.scaleLinear()
+      .domain([-0.3, 0.44])
+      .range([ this.scatter_svg_height, 0]);
+
+    for (let ci=0; ci<this.NUM_CLUSTERS; ci++){
+      scatter.selectAll("dot")
+        .data(this.data)
+          .enter()
+          .filter( (d: any) =>  d.cluster == ci )
+          .append("g")
+          .attr('class', "scatter-cluster scatter-cluster-"+ci)
+          .append("circle")
+            .attr("cx", (d: any) => x(d.x0))
+            .attr("cy", (d: any) => y(d.x1))
+            .transition(d3.transition(), 40000)
+            .attr("r", 1.6)
+            .attr("fill", (d: any) => cluster_color_map[d.cluster])
+            .attr("stroke", (d: any) => cluster_color_map[d.cluster])
+    }
+
+    let color_amplifier = 5;
     this.g.selectAll("lites-overlay")
       .data(this.data)
         .enter()
@@ -139,16 +158,10 @@ export class LiteBriteChartComponent implements OnInit {
           .attr('height', this.adjustHeight)
           .attr("fill", "white")
           .attr("fill-opacity", 0)
-          .on("dblclick", function (this: any, _event: any, _d: any) {
-            d3.selectAll(".lites-overlay")
-            .attr("fill-opacity", 0)
-          })
           .on("mouseover", function (this: any, _event: any, d:any) {
             d3Select.select(this)
-              // .style("stroke", "red")
             tooltip
               .style('top', (_event.layerY + 15) + 'px').style('left', (_event.layerX) + 'px')
-              // .style('background', function (this: any) {return 1 ? "black" : "#FFFCE0";})
               .style('background', "#f0e3d0")
               .style('display', 'block').style('opacity', 0.99)
               .html(`cluster: ${_event.target.__data__['cluster']}<br>number: ${_event.target.__data__['fragment_number']}<br>index: ${_event.target.__data__['fragment_index']}<br>row: ${_event.target.__data__['row']}<br>col: ${_event.target.__data__['col']}`);
@@ -162,30 +175,41 @@ export class LiteBriteChartComponent implements OnInit {
           .on("click", function (this: any, _event: any, _d: any) {
             textviewer
               .html(`${_d.corpus}`);
+            //reset
+            scatter.selectAll(".scatter-cluster")
+              .attr("fill-opacity", 0)
+              .attr("stroke-opacity", 0)
+
+            scatter.selectAll(".scatter-cluster-"+_d.cluster)
+              .transition(d3.transition())
+              .attr("fill-opacity", 1)
+              .attr("stroke-opacity", 1)
           })
           .on("dblclick", function (this: any, _event: any, _d: any) {
-            console.log(_d.sim_arr);
-            console.log(Math.log(0.05806600723043625));
             d3.selectAll(".lites")
               .data(_d.sim_arr)
               .transition(d3.transition())
               .attr("fill", cluster_color_map[_d.cluster])
-              .attr("fill-opacity", (d: any) =>  d*10)
-              .style("stroke-opacity", (d: any) => d*10)
+              .attr("fill-opacity", (d: any) =>    d*color_amplifier)
+              .style("stroke-opacity", (d: any) => d*color_amplifier)
               .style("stroke-color", cluster_color_map[_d.cluster])
           })
 
   }
   public refreshLiteBrites(){
-    d3.select('svg').remove();
+    // d3.select('svg').remove();
+    this.scatter_svg_g.selectAll(".scatter-cluster")
+      .attr("fill-opacity", 1)
+      .attr("stroke-opacity", 1)
+    d3.selectAll('svg').remove();
     this.buildSvg();
     this.drawLites();
     d3.select('.text-viewer').html(``);
   }
-  public refreshLiteBritesChart(){
-    d3.select('svg').remove();
-    this.buildSvg();
-    this.drawLites();
-    // d3.select('.text-viewer').html(``);
-  }
+  // public refreshLiteBritesChart(){
+  //   d3.select('svg').remove();
+  //   this.buildSvg();
+  //   this.drawLites();
+  //   // d3.select('.text-viewer').html(``);
+  // }
 }

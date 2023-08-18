@@ -8,6 +8,11 @@
     <div class="tooltip"></div>
     <div id="subcontainer">
         <div #chart id="chart"></div>
-        <div id="text-viewer" (click)="refreshLiteBrites()"><i>{{message}}</i><br><br></div>
+        <div>
+          <div id="cluster-scatterplot"></div>
+          <div id="text-viewer" (click)="refreshLiteBrites()">
+            <i>{{message}}</i><br><br>
+          </div>
+        </div>
     </div>
 </div>
