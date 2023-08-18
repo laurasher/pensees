@@ -162,7 +162,7 @@ export class LiteBriteChartComponent implements OnInit {
             d3Select.select(this)
             tooltip
               .style('top', (_event.layerY + 15) + 'px').style('left', (_event.layerX) + 'px')
-              .style('background', "#f0e3d0")
+              .style('background', "#f6efe3")
               .style('display', 'block').style('opacity', 0.99)
               .html(`cluster: ${_event.target.__data__['cluster']}<br>number: ${_event.target.__data__['fragment_number']}<br>index: ${_event.target.__data__['fragment_index']}<br>row: ${_event.target.__data__['row']}<br>col: ${_event.target.__data__['col']}`);
           })
