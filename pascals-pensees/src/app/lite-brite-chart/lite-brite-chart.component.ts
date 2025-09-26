@@ -22,7 +22,7 @@ export class LiteBriteChartComponent implements OnInit {
   public filterBy: string = '';
   filterControl = new FormControl();
 
-  public message = "Click colored boxes to see pensées text. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset the lite-brite chart."
+  public message = "Click colored boxes to see pensées text below. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset."
   // public message = ""
   private square: number = 10;
   private squareBuffer: number = 0;
