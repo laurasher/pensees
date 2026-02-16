@@ -10,3 +10,4 @@ JHU*
 *.pkl
 *.pickle
 **/node_modules
+pascals-pensees/dist/

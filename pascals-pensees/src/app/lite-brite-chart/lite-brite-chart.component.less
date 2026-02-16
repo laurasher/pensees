@@ -1,6 +1,42 @@
 #container {
   height: 100%;
   width: 100%;
+  position: relative;
+}
+#search-container {
+  position: absolute;
+  top: 1vh;
+  left: 2vw;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 25px;
+  padding: 0.5vh 1vw;
+  box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 7px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
+  z-index: 1000;
+}
+#search-input {
+  border: none;
+  outline: none;
+  font-family: "Effra Rg" !important;
+  font-size: 0.9vw;
+  padding: 0.5vh 0.5vw;
+  width: 30vw;
+  background: transparent;
+}
+#search-input::placeholder {
+  color: #999;
+}
+.search-icon {
+  color: #666;
+  margin-right: 0.5vw;
+}
+#clear-icon {
+  cursor: pointer;
+  color: #666;
+  &:hover {
+    color: #333;
+  }
 }
 #subcontainer {
   display: grid;
