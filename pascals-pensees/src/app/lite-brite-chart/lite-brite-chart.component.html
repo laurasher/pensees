@@ -1,5 +1,19 @@
 <div id="container">
-    <!-- <mat-icon class="search-icon">search</mat-icon> -->
+    <div id="search-container">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Search pensées by text, fragment index, or number..."
+            [(ngModel)]="searchTerm"
+            (input)="searchPensees()"
+        />
+        <mat-icon 
+            id="clear-icon" 
+            (click)="clearSearch()"
+            *ngIf="searchTerm"
+        >close</mat-icon>
+    </div>
     <mat-icon id="refresh-icon" (click)="refreshLiteBrites()">refresh</mat-icon>
     <div class="tooltip"></div>
     <div id="subcontainer">

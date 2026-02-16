@@ -20,6 +20,8 @@ export class LiteBriteChartComponent implements OnInit {
   @Input() data: FragmentInterface | null = null;
 
   public message = "Click colored boxes to see pensées text. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset the lite-brite chart."
+  public searchTerm: string = '';
+  private matchedIndices: Set<number> = new Set();
   private square: number = 10;
   private squareBuffer: number = 0;
   private url: string = '/assets/pensee_clusters.json';
@@ -158,7 +160,50 @@ export class LiteBriteChartComponent implements OnInit {
           })
 
   }
+  
+  public searchPensees(): void {
+    this.matchedIndices.clear();
+    
+    if (!this.data) {
+      return;
+    }
+    
+    if (!this.searchTerm || this.searchTerm.trim() === '') {
+      // If search is empty, restore all rectangles
+      this.refreshLiteBritesChart();
+      return;
+    }
+    
+    const searchLower = this.searchTerm.toLowerCase();
+    const dataArray = this.data as unknown as any[];
+    
+    // Find matching indices
+    dataArray.forEach((d: any, i: number) => {
+      const corpusMatch = d.corpus && d.corpus.toLowerCase().includes(searchLower);
+      const indexMatch = d.fragment_index !== undefined && d.fragment_index.toString().includes(searchLower);
+      const numberMatch = d.fragment_number !== undefined && d.fragment_number.toString().includes(searchLower);
+      
+      if (corpusMatch || indexMatch || numberMatch) {
+        this.matchedIndices.add(i);
+      }
+    });
+    
+    // Update visual appearance
+    d3.selectAll(".lites")
+      .attr("fill-opacity", (_d: any, i: number) => this.matchedIndices.has(i) ? 1 : 0.1)
+      .attr("stroke-opacity", (_d: any, i: number) => this.matchedIndices.has(i) ? 1 : 0.1)
+      .attr("stroke-width", 1)
+      .attr("stroke", (_d: any) => this.cluster_color_map[_d.cluster]);
+  }
+  
+  public clearSearch(): void {
+    this.searchTerm = '';
+    this.searchPensees();
+  }
+  
   public refreshLiteBrites(){
+    this.searchTerm = '';
+    this.matchedIndices.clear();
     d3.select('svg').remove();
     this.buildSvg();
     this.drawLites();
