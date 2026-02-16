@@ -1,23 +1,27 @@
 .main-page-content {
     display: flex; /* or inline-flex */
     flex-direction: column;
-    height: 90vh;
+    min-height: 90vh;
+    height: auto;
 }
 #main-page-title {
     font-family: adso, sans-serif;
     font-weight: 200 !important;
     font-style: italic;
     // font-size: 2.5vw;
-    font-size: 5vw;
+    font-size: clamp(2rem, 5vw, 4.5rem);
     margin: 0 !important;
 }
 #main-page-subtitle {
     font-family: "Effra Lt";
-    font-size: 0.9vw;
+    font-size: clamp(0.8rem, 0.9vw, 1.2rem);
     margin-top: 0;
-    margin-bottom: 2vw;
+    margin-bottom: clamp(1rem, 2vw, 2rem);
 }
 #charts-bottom-half {
-    height: 80%;
+    flex: 1;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
 }
 

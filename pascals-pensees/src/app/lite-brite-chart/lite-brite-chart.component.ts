@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, OnChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, OnChanges, ViewChild, ViewEncapsulation, HostListener } from '@angular/core';
 // import * as _ from 'lodash';
 
 import * as d3 from 'd3';
@@ -63,6 +63,23 @@ export class LiteBriteChartComponent implements OnInit {
   ngOnChanges(): void {
     if (!this.data) { return; }
     console.log(this.data);
+    this.buildSvg();
+    this.drawLites();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    if (this.data) {
+      this.rebuildChart();
+    }
+  }
+
+  private rebuildChart() {
+    // Clear existing SVG
+    if (this.svg) {
+      this.svg.remove();
+    }
+    // Rebuild with new dimensions
     this.buildSvg();
     this.drawLites();
   }

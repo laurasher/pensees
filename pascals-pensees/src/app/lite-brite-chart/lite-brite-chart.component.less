@@ -6,12 +6,12 @@
 #search-container {
   position: absolute;
   top: 1vh;
-  left: 2vw;
+  left: clamp(1rem, 2vw, 2.5rem);
   display: flex;
   align-items: center;
   background: white;
   border-radius: 25px;
-  padding: 0.5vh 1vw;
+  padding: clamp(0.3rem, 0.5vh, 0.6rem) clamp(0.6rem, 1vw, 1.2rem);
   box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 7px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
   z-index: 1000;
 }
@@ -19,9 +19,9 @@
   border: none;
   outline: none;
   font-family: "Effra Rg" !important;
-  font-size: 0.9vw;
-  padding: 0.5vh 0.5vw;
-  width: 30vw;
+  font-size: clamp(0.8rem, 0.9vw, 1.1rem);
+  padding: clamp(0.3rem, 0.5vh, 0.6rem) clamp(0.3rem, 0.5vw, 0.6rem);
+  width: clamp(150px, 30vw, 400px);
   background: transparent;
 }
 #search-input::placeholder {
@@ -29,7 +29,7 @@
 }
 .search-icon {
   color: #666;
-  margin-right: 0.5vw;
+  margin-right: clamp(0.3rem, 0.5vw, 0.6rem);
 }
 #clear-icon {
   cursor: pointer;
@@ -44,6 +44,12 @@
   width: 100%;
   grid-template-columns: 66% 30%; /*100-2-2=96*/
   grid-column-gap: 2%;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    grid-row-gap: 2%;
+  }
 }
 svg {
   margin-right: 0px;
@@ -52,6 +58,7 @@ svg {
   overflow: inherit;
   height: 100%;
   width: 100%;
+  min-height: 400px;
   // outline: 2px dotted red;
 }
 #text-viewer {
@@ -59,7 +66,7 @@ svg {
   height: 100%;
   width: 100%;
   overflow-y: scroll;
-  font-size: 0.9vw;
+  font-size: clamp(0.8rem, 0.9vw, 1.1rem);
 }
 .tooltip {
   position: absolute;
@@ -68,7 +75,7 @@ svg {
   padding-top: 1% !important;
   margin: auto;
   font-family: "Effra Rg" !important;
-  font-size: 0.8vw !important;
+  font-size: clamp(0.7rem, 0.8vw, 1rem) !important;
   padding-top: 0px;
   vertical-align: middle;
   border-radius: 7px;
@@ -78,7 +85,7 @@ svg {
 #refresh-icon {
   position: absolute;
   float: right;
-  right: 2vw;
+  right: clamp(1rem, 2vw, 2.5rem);
 }
 .mat-icon {
   // background-color: #707070;
