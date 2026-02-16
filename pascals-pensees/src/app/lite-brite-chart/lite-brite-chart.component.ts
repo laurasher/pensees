@@ -119,15 +119,16 @@ export class LiteBriteChartComponent implements OnInit {
         .style('display', 'block')
         .style('margin', '0 auto'); // Center horizontally
 
+    // Use explicit margin values instead of trying to parse CSS (which may have 'auto')
     this.margin = {
-      top: +this.svg.style("margin-top").replace("px", ""),
-      right: +this.svg.style("margin-right").replace("px", ""),
-      bottom: +this.svg.style("margin-bottom").replace("px", ""),
-      left: +this.svg.style("margin-left").replace("px", "")
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0
     };
 
-    this.width = +this.svg.style("width").replace("px", "");
-    this.height = +this.svg.style("height").replace("px", "");
+    this.width = svgWidth;
+    this.height = svgHeight;
 
     this.contentWidth = this.width - this.margin.left - this.margin.right;
     this.contentHeight = this.height - this.margin.top - this.margin.bottom;
