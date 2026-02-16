@@ -65,7 +65,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   constructor() {}
 
   @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
+  onResize() {
     // Debounce resize events to avoid excessive redraws
     if (this.resizeTimeout) {
       clearTimeout(this.resizeTimeout);
@@ -77,8 +77,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
 
   private handleResize() {
     if (!this.data) { return; }
-    // Remove existing SVG elements
-    d3.selectAll('svg').remove();
+    // Remove existing SVG elements only within this component
+    d3.select(this.chartContainer.nativeElement).selectAll('svg').remove();
+    d3.select('#cluster-scatterplot').selectAll('svg').remove();
     // Rebuild and redraw
     this.buildSvg();
     this.drawLites();
