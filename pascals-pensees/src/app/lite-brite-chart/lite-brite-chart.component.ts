@@ -21,6 +21,8 @@ export class LiteBriteChartComponent implements OnInit {
 
   public filterBy: string = '';
   filterControl = new FormControl();
+  public searchTerm: string = '';
+  public matchedIndices: Set<number> = new Set<number>();
 
   public message = "Click colored boxes to see pensées text below. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset."
   // public message = ""
@@ -196,7 +198,79 @@ export class LiteBriteChartComponent implements OnInit {
           })
 
   }
+  
+  public searchPensees() {
+    this.matchedIndices.clear();
+    
+    if (!this.searchTerm || this.searchTerm.trim() === '') {
+      // If search is empty, redraw to show all rectangles normally
+      d3.selectAll('svg').remove();
+      this.buildSvg();
+      this.drawLites();
+      return;
+    }
+    
+    const searchLower = this.searchTerm.toLowerCase().trim();
+    
+    // Find matching indices
+    if (Array.isArray(this.data)) {
+      this.data.forEach((item: any, index: number) => {
+        const corpusMatch = item.corpus?.toLowerCase().includes(searchLower);
+        const fragmentIndexMatch = item.fragment_index?.toString().includes(searchLower);
+        const fragmentNumberMatch = item.fragment_number?.toString().includes(searchLower);
+        
+        if (corpusMatch || fragmentIndexMatch || fragmentNumberMatch) {
+          this.matchedIndices.add(index);
+        }
+      });
+    }
+    
+    // Apply highlighting to existing rectangles
+    this.applySearchHighlighting();
+  }
+  
+  private applySearchHighlighting() {
+    const hasMatches = this.matchedIndices.size > 0;
+    const cluster_color_map = this.cluster_color_map;
+    
+    if (!hasMatches) {
+      // No matches - dim all rectangles
+      d3.selectAll('.lites')
+        .transition(d3.transition().duration(200))
+        .attr('fill-opacity', 0.3)
+        .attr('stroke-opacity', 0.3)
+        .attr('stroke-width', 1);
+    } else {
+      // Apply highlighting to matches and dim non-matches
+      d3.selectAll('.lites')
+        .each((d: any, i: number, nodes: any) => {
+          const isMatch = this.matchedIndices.has(i);
+          d3.select(nodes[i])
+            .transition(d3.transition().duration(200))
+            .attr('fill-opacity', isMatch ? 1 : 0.3)
+            .attr('stroke-opacity', isMatch ? 1 : 0.3)
+            .attr('stroke', function(this: any, data: any) {
+              return isMatch ? '#FFD700' : cluster_color_map[data.cluster];
+            })
+            .attr('stroke-width', isMatch ? 3 : 1);
+        });
+    }
+  }
+  
+  public clearSearch() {
+    this.searchTerm = '';
+    this.matchedIndices.clear();
+    // Redraw to restore normal appearance
+    d3.selectAll('svg').remove();
+    this.buildSvg();
+    this.drawLites();
+  }
+
   public refreshLiteBrites(){
+    // Clear search state
+    this.searchTerm = '';
+    this.matchedIndices.clear();
+    
     // d3.select('svg').remove();
     this.scatter_svg_g.selectAll(".scatter-cluster")
       .attr("fill-opacity", 1)

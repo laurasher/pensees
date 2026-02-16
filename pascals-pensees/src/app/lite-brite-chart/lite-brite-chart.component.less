@@ -55,7 +55,52 @@ svg {
   position: absolute;
   float: right;
   right: 2vw;
+  cursor: pointer;
 }
+
+#search-container {
+  position: absolute;
+  top: 1vh;
+  left: 2vw;
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  z-index: 10;
+}
+
+#search-input {
+  padding: 0.5vw 1vw;
+  font-family: "Effra Rg" !important;
+  font-size: 0.8vw !important;
+  border: 1px solid #e0e0e0;
+  border-radius: 7px;
+  background: white;
+  outline: none;
+  width: 20vw;
+  box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 7px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
+  
+  &:focus {
+    border-color: #4D7F71;
+  }
+  
+  &::placeholder {
+    color: #999;
+    font-family: "Effra Lt" !important;
+  }
+}
+
+#clear-icon {
+  cursor: pointer;
+  font-size: 1.2vw !important;
+  width: 1.2vw;
+  height: 1.2vw;
+  color: #666;
+  
+  &:hover {
+    color: #333;
+  }
+}
+
 .mat-icon {
   // background-color: #707070;
   vertical-align: middle !important;

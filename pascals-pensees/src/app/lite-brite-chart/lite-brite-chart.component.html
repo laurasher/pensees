@@ -1,4 +1,16 @@
 <div id="container">
+    <!-- Search Bar -->
+    <div id="search-container">
+        <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Search pensées..." 
+            [(ngModel)]="searchTerm"
+            (input)="searchPensees()"
+        />
+        <mat-icon *ngIf="searchTerm" id="clear-icon" (click)="clearSearch()">close</mat-icon>
+    </div>
+    
     <!-- <mat-form-field class="pensees-search" appearance="fill">
       <mat-label>Search pensées text</mat-label>
       <input type="text" matInput [(ngModel)]="filterBy">
