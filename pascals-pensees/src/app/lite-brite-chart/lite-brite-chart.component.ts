@@ -25,6 +25,7 @@ export class LiteBriteChartComponent implements OnInit {
   private square: number = 10;
   private squareBuffer: number = 0;
   private url: string = '/assets/pensee_clusters.json';
+  private resizeTimeout: any;
 
   private margin = {top: 0, right: 0, bottom: 0, left: 0};
   private width: number = 0;
@@ -67,10 +68,14 @@ export class LiteBriteChartComponent implements OnInit {
     this.drawLites();
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
+  @HostListener('window:resize')
+  onResize() {
     if (this.data) {
-      this.rebuildChart();
+      // Debounce resize events to avoid excessive redraws
+      clearTimeout(this.resizeTimeout);
+      this.resizeTimeout = setTimeout(() => {
+        this.rebuildChart();
+      }, 250);
     }
   }
 
