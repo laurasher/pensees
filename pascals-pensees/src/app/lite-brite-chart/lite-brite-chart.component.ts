@@ -17,6 +17,8 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
 
   @ViewChild('chart')
   private chartContainer: ElementRef;
+  @ViewChild('clusterScatterplot')
+  private scatterplotContainer: ElementRef;
   @Input() data: FragmentInterface | null = null;
 
   public filterBy: string = '';
@@ -79,7 +81,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     if (!this.data) { return; }
     // Remove existing SVG elements only within this component
     d3.select(this.chartContainer.nativeElement).selectAll('svg').remove();
-    d3.select('#cluster-scatterplot').selectAll('svg').remove();
+    if (this.scatterplotContainer) {
+      d3.select(this.scatterplotContainer.nativeElement).selectAll('svg').remove();
+    }
     // Rebuild and redraw
     this.buildSvg();
     this.drawLites();
