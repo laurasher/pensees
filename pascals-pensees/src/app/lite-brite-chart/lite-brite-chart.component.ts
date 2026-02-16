@@ -190,15 +190,10 @@ export class LiteBriteChartComponent implements OnInit {
     
     // Update visual appearance
     d3.selectAll(".lites")
-      .attr("fill-opacity", (_d: any, i: number) => this.matchedIndices.has(i) ? 1 : 0.3)
-      .attr("stroke-opacity", (_d: any, i: number) => this.matchedIndices.has(i) ? 1 : 0.3)
-      .attr("stroke-width", (_d: any, i: number) => this.matchedIndices.has(i) ? 2 : 1)
-      .attr("stroke", (_d: any, i: number) => {
-        if (this.matchedIndices.has(i)) {
-          return "gold";
-        }
-        return this.cluster_color_map[_d.cluster];
-      });
+      .attr("fill-opacity", (_d: any, i: number) => this.matchedIndices.has(i) ? 1 : 0.1)
+      .attr("stroke-opacity", (_d: any, i: number) => this.matchedIndices.has(i) ? 1 : 0.1)
+      .attr("stroke-width", 1)
+      .attr("stroke", (_d: any) => this.cluster_color_map[_d.cluster]);
   }
   
   public clearSearch(): void {
