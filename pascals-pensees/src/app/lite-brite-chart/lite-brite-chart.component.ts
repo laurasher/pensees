@@ -175,7 +175,7 @@ export class LiteBriteChartComponent implements OnInit {
     }
     
     const searchLower = this.searchTerm.toLowerCase();
-    const dataArray = this.data as any as Array<any>;
+    const dataArray = this.data as unknown as any[];
     
     // Find matching indices
     dataArray.forEach((d: any, i: number) => {
