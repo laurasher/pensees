@@ -23,6 +23,7 @@ export class LiteBriteChartComponent implements OnInit {
   filterControl = new FormControl();
   public searchTerm: string = '';
   public matchedIndices: Set<number> = new Set<number>();
+  private searchDebounceTimer: any = null;
 
   public message = "Click colored boxes to see pensées text below. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset."
   // public message = ""
@@ -200,13 +201,23 @@ export class LiteBriteChartComponent implements OnInit {
   }
   
   public searchPensees() {
+    // Clear any existing debounce timer
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
+    }
+    
+    // Debounce search execution by 150ms
+    this.searchDebounceTimer = setTimeout(() => {
+      this.executeSearch();
+    }, 150);
+  }
+  
+  private executeSearch() {
     this.matchedIndices.clear();
     
     if (!this.searchTerm || this.searchTerm.trim() === '') {
-      // If search is empty, redraw to show all rectangles normally
-      d3.selectAll('svg').remove();
-      this.buildSvg();
-      this.drawLites();
+      // If search is empty, just reset styles without rebuilding SVG
+      this.resetSearchHighlighting();
       return;
     }
     
@@ -229,6 +240,16 @@ export class LiteBriteChartComponent implements OnInit {
     this.applySearchHighlighting();
   }
   
+  private resetSearchHighlighting() {
+    // Reset all rectangles to normal appearance without rebuilding SVG
+    d3.selectAll('.lites')
+      .transition(d3.transition().duration(150))
+      .attr('fill-opacity', 1)
+      .attr('stroke-opacity', 1)
+      .attr('stroke', (d: any) => this.cluster_color_map[d.cluster])
+      .attr('stroke-width', 1);
+  }
+  
   private applySearchHighlighting() {
     const hasMatches = this.matchedIndices.size > 0;
     const cluster_color_map = this.cluster_color_map;
@@ -236,9 +257,10 @@ export class LiteBriteChartComponent implements OnInit {
     if (!hasMatches) {
       // No matches - dim all rectangles
       d3.selectAll('.lites')
-        .transition(d3.transition().duration(200))
+        .transition(d3.transition().duration(150))
         .attr('fill-opacity', 0.3)
         .attr('stroke-opacity', 0.3)
+        .attr('stroke', (d: any) => cluster_color_map[d.cluster])
         .attr('stroke-width', 1);
     } else {
       // Apply highlighting to matches and dim non-matches
@@ -246,13 +268,11 @@ export class LiteBriteChartComponent implements OnInit {
         .each((d: any, i: number, nodes: any) => {
           const isMatch = this.matchedIndices.has(i);
           d3.select(nodes[i])
-            .transition(d3.transition().duration(200))
+            .transition(d3.transition().duration(150))
             .attr('fill-opacity', isMatch ? 1 : 0.3)
             .attr('stroke-opacity', isMatch ? 1 : 0.3)
-            .attr('stroke', function(this: any, data: any) {
-              return isMatch ? '#FFD700' : cluster_color_map[data.cluster];
-            })
-            .attr('stroke-width', isMatch ? 3 : 1);
+            .attr('stroke', (data: any) => cluster_color_map[data.cluster])
+            .attr('stroke-width', 1);
         });
     }
   }
@@ -260,10 +280,14 @@ export class LiteBriteChartComponent implements OnInit {
   public clearSearch() {
     this.searchTerm = '';
     this.matchedIndices.clear();
-    // Redraw to restore normal appearance
-    d3.selectAll('svg').remove();
-    this.buildSvg();
-    this.drawLites();
+    
+    // Clear any pending debounce timer
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
+    }
+    
+    // Just reset styles without rebuilding SVG
+    this.resetSearchHighlighting();
   }
 
   public refreshLiteBrites(){
