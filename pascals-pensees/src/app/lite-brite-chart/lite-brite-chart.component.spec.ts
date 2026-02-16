@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 import { LiteBriteChartComponent } from './lite-brite-chart.component';
 
@@ -8,7 +10,8 @@ describe('LiteBriteChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LiteBriteChartComponent ]
+      declarations: [ LiteBriteChartComponent ],
+      imports: [ FormsModule, MatIconModule ]
     })
     .compileComponents();
   });
