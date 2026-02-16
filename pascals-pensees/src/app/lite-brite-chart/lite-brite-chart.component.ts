@@ -91,9 +91,33 @@ export class LiteBriteChartComponent implements OnInit {
 
   private buildSvg() {
     const element = this.chartContainer.nativeElement;
+    const containerWidth = element.offsetWidth;
+    const containerHeight = element.offsetHeight;
+    
+    // Original grid dimensions: 44 columns x 21 rows
+    const gridCols = 44;
+    const gridRows = 21;
+    const aspectRatio = gridCols / gridRows; // ~2.095
+    
+    // Calculate dimensions that maintain aspect ratio
+    let svgWidth = containerWidth;
+    let svgHeight = containerHeight;
+    
+    // Constrain dimensions to maintain aspect ratio
+    const containerAspectRatio = containerWidth / containerHeight;
+    if (containerAspectRatio > aspectRatio) {
+      // Container is wider than needed, constrain by height
+      svgWidth = containerHeight * aspectRatio;
+    } else {
+      // Container is taller than needed, constrain by width
+      svgHeight = containerWidth / aspectRatio;
+    }
+    
     this.svg = d3.select(element).append('svg')
-        .attr('width', element.offsetWidth)
-        .attr('height', element.offsetHeight);
+        .attr('width', svgWidth)
+        .attr('height', svgHeight)
+        .style('display', 'block')
+        .style('margin', '0 auto'); // Center horizontally
 
     this.margin = {
       top: +this.svg.style("margin-top").replace("px", ""),
@@ -107,9 +131,15 @@ export class LiteBriteChartComponent implements OnInit {
 
     this.contentWidth = this.width - this.margin.left - this.margin.right;
     this.contentHeight = this.height - this.margin.top - this.margin.bottom;
-    this.adjustWidth = this.contentWidth/44;
-    this.adjustHeight = this.contentHeight/21;
-    // this.adjustHeight = this.adjustWidth;
+    
+    // Calculate square size - use the minimum of width/cols and height/rows to ensure grid fits
+    const cellWidth = this.contentWidth / gridCols;
+    const cellHeight = this.contentHeight / gridRows;
+    const cellSize = Math.min(cellWidth, cellHeight);
+    
+    // Keep squares square by using the same dimension for both
+    this.adjustWidth = cellSize;
+    this.adjustHeight = cellSize;
 
     this.g = this.svg.append("g")
               .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
