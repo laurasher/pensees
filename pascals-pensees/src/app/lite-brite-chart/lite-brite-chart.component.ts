@@ -23,7 +23,9 @@ export class LiteBriteChartComponent implements OnInit {
   filterControl = new FormControl();
   public searchTerm: string = '';
   public matchedIndices: Set<number> = new Set<number>();
+  private previousMatchedIndices: Set<number> = new Set<number>();
   private searchDebounceTimer: any = null;
+  private searchCache: Array<{corpusLower: string, indexStr: string, numberStr: string}> = [];
 
   public message = "Click colored boxes to see pensées text below. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset."
   // public message = ""
@@ -71,6 +73,16 @@ export class LiteBriteChartComponent implements OnInit {
   ngOnChanges(): void {
     if (!this.data) { return; }
     console.log(this.data);
+    
+    // Build search cache to avoid repeated toLowerCase() operations
+    if (Array.isArray(this.data)) {
+      this.searchCache = this.data.map(item => ({
+        corpusLower: item.corpus?.toLowerCase() || '',
+        indexStr: item.fragment_index?.toString() || '',
+        numberStr: item.fragment_number?.toString() || ''
+      }));
+    }
+    
     this.buildSvg();
     this.drawLites();
   }
@@ -206,13 +218,15 @@ export class LiteBriteChartComponent implements OnInit {
       clearTimeout(this.searchDebounceTimer);
     }
     
-    // Debounce search execution by 150ms
+    // Debounce search execution by 300ms (increased for better performance)
     this.searchDebounceTimer = setTimeout(() => {
       this.executeSearch();
-    }, 150);
+    }, 300);
   }
   
   private executeSearch() {
+    // Store previous state for comparison
+    this.previousMatchedIndices = new Set(this.matchedIndices);
     this.matchedIndices.clear();
     
     if (!this.searchTerm || this.searchTerm.trim() === '') {
@@ -223,58 +237,67 @@ export class LiteBriteChartComponent implements OnInit {
     
     const searchLower = this.searchTerm.toLowerCase().trim();
     
-    // Find matching indices
-    if (Array.isArray(this.data)) {
-      this.data.forEach((item: any, index: number) => {
-        const corpusMatch = item.corpus?.toLowerCase().includes(searchLower);
-        const fragmentIndexMatch = item.fragment_index?.toString().includes(searchLower);
-        const fragmentNumberMatch = item.fragment_number?.toString().includes(searchLower);
-        
-        if (corpusMatch || fragmentIndexMatch || fragmentNumberMatch) {
-          this.matchedIndices.add(index);
-        }
-      });
-    }
+    // Use cached lowercase strings for much faster search
+    this.searchCache.forEach((cached, index) => {
+      if (cached.corpusLower.includes(searchLower) ||
+          cached.indexStr.includes(searchLower) ||
+          cached.numberStr.includes(searchLower)) {
+        this.matchedIndices.add(index);
+      }
+    });
     
     // Apply highlighting to existing rectangles
     this.applySearchHighlighting();
   }
   
   private resetSearchHighlighting() {
-    // Reset all rectangles to normal appearance without rebuilding SVG
-    d3.selectAll('.lites')
-      .transition(d3.transition().duration(150))
+    // Reset all rectangles to normal appearance without transitions for instant feedback
+    const allRects = d3.selectAll('.lites');
+    allRects
       .attr('fill-opacity', 1)
       .attr('stroke-opacity', 1)
       .attr('stroke', (d: any) => this.cluster_color_map[d.cluster])
       .attr('stroke-width', 1);
+    
+    this.previousMatchedIndices.clear();
   }
   
   private applySearchHighlighting() {
     const hasMatches = this.matchedIndices.size > 0;
     const cluster_color_map = this.cluster_color_map;
     
+    // Get all rectangles once
+    const allRects = d3.selectAll('.lites');
+    
     if (!hasMatches) {
-      // No matches - dim all rectangles
-      d3.selectAll('.lites')
-        .transition(d3.transition().duration(150))
+      // No matches - dim all rectangles instantly
+      allRects
         .attr('fill-opacity', 0.3)
         .attr('stroke-opacity', 0.3)
         .attr('stroke', (d: any) => cluster_color_map[d.cluster])
         .attr('stroke-width', 1);
     } else {
-      // Apply highlighting to matches and dim non-matches
-      d3.selectAll('.lites')
-        .each((d: any, i: number, nodes: any) => {
-          const isMatch = this.matchedIndices.has(i);
-          d3.select(nodes[i])
-            .transition(d3.transition().duration(150))
-            .attr('fill-opacity', isMatch ? 1 : 0.3)
-            .attr('stroke-opacity', isMatch ? 1 : 0.3)
-            .attr('stroke', (data: any) => cluster_color_map[data.cluster])
-            .attr('stroke-width', 1);
-        });
+      // Only update rectangles that changed state
+      allRects.each((d: any, i: number, nodes: any) => {
+        const isMatch = this.matchedIndices.has(i);
+        const wasMatch = this.previousMatchedIndices.has(i);
+        
+        // Skip if state hasn't changed
+        if (isMatch === wasMatch && this.previousMatchedIndices.size > 0) {
+          return;
+        }
+        
+        // Update only changed rectangles
+        d3.select(nodes[i])
+          .attr('fill-opacity', isMatch ? 1 : 0.3)
+          .attr('stroke-opacity', isMatch ? 1 : 0.3)
+          .attr('stroke', cluster_color_map[d.cluster])
+          .attr('stroke-width', 1);
+      });
     }
+    
+    // Update previous state
+    this.previousMatchedIndices = new Set(this.matchedIndices);
   }
   
   public clearSearch() {
