@@ -1,7 +1,9 @@
 .main-page-content {
     display: flex; /* or inline-flex */
     flex-direction: column;
-    height: 90vh;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 }
 #main-page-title {
     font-family: adso, sans-serif;
@@ -25,6 +27,8 @@
   width: 65%;
 }
 #charts-bottom-half {
-    height: 80%;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
