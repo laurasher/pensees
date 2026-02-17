@@ -230,8 +230,6 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .select("circle")
               .transition().duration(100)
               .attr("r", 4)
-              .attr("stroke-width", 2)
-              .attr("stroke", "black")
               .attr("fill-opacity", 1)
               .attr("stroke-opacity", 1);
           })
@@ -252,9 +250,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             scatter.select(".scatter-dot-"+fragmentIndex)
               .select("circle")
               .transition().duration(100)
-              .attr("r", 1.6)
-              .attr("stroke-width", 1)
-              .attr("stroke", cluster_color_map[_event.target.__data__['cluster']]);
+              .attr("r", 1.6);
           })
           .on("click", function (this: any, _event: any, _d: any) {
             textviewer
