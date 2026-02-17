@@ -34,6 +34,38 @@ svg {
   overflow-y: scroll;
   // font-size: 0.9vw;
   font-size: 1.01vw;
+  display: flex;
+  flex-direction: column;
+  transition: height 0.3s ease;
+  
+  &.expanded {
+    height: calc(80vh - @side-panel-spacing - 2vh);
+  }
+}
+
+.text-viewer-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5vw;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.text-viewer-content {
+  flex: 1;
+  overflow-y: scroll;
+  padding: 0.5vw;
+}
+
+.expand-icon {
+  cursor: pointer;
+  font-size: 1.5vw !important;
+  width: 1.5vw;
+  height: 1.5vw;
+  color: #666;
+  
+  &:hover {
+    color: #333;
+  }
 }
 #cluster-scatterplot {
   // outline: 2px dotted red;
@@ -43,6 +75,11 @@ svg {
   height: calc(40vh - @side-panel-spacing);
   min-height: @side-panel-min-height;
   width: 100%;
+  transition: all 0.3s ease;
+  
+  &.hidden {
+    display: none;
+  }
 }
 .tooltip {
   position: absolute;

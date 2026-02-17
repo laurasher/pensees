@@ -21,9 +21,16 @@
     <div id="subcontainer">
         <div #chart id="chart"></div>
         <div>
-          <div #clusterScatterplot id="cluster-scatterplot"></div>
-          <div id="text-viewer" (click)="refreshLiteBrites()">
-            <i>{{message}}</i><br><br>
+          <div #clusterScatterplot id="cluster-scatterplot" [class.hidden]="isTextViewerExpanded"></div>
+          <div id="text-viewer" [class.expanded]="isTextViewerExpanded">
+            <div class="text-viewer-header">
+              <mat-icon class="expand-icon" (click)="toggleTextViewer()" [title]="isTextViewerExpanded ? 'Collapse' : 'Expand'">
+                {{ isTextViewerExpanded ? 'unfold_less' : 'unfold_more' }}
+              </mat-icon>
+            </div>
+            <div class="text-viewer-content" (click)="refreshLiteBrites()">
+              <i>{{message}}</i><br><br>
+            </div>
           </div>
         </div>
     </div>
