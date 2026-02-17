@@ -32,6 +32,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
 
   public message = "Click colored boxes to see pensées text below. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset."
   // public message = ""
+  public isTextViewerExpanded: boolean = false;
   private square: number = 10;
   private squareBuffer: number = 0;
 
@@ -362,6 +363,10 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     this.buildSvg();
     this.drawLites();
     d3.select('.text-viewer').html(``);
+  }
+
+  public toggleTextViewer() {
+    this.isTextViewerExpanded = !this.isTextViewerExpanded;
   }
   // public refreshLiteBritesChart(){
   //   d3.select('svg').remove();
