@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, OnChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, OnChanges, OnDestroy, ViewChild, ViewEncapsulation, HostListener } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import * as d3 from 'd3';
@@ -13,10 +13,12 @@ import { FragmentInterface } from '../fragment';
   templateUrl: './lite-brite-chart.component.html',
   styleUrls: ['./lite-brite-chart.component.less']
 })
-export class LiteBriteChartComponent implements OnInit {
+export class LiteBriteChartComponent implements OnInit, OnDestroy {
 
   @ViewChild('chart')
   private chartContainer: ElementRef;
+  @ViewChild('clusterScatterplot')
+  private scatterplotContainer: ElementRef;
   @Input() data: FragmentInterface | null = null;
 
   public filterBy: string = '';
@@ -26,6 +28,7 @@ export class LiteBriteChartComponent implements OnInit {
   private previousMatchedIndices: Set<number> = new Set<number>();
   private searchDebounceTimer: any = null;
   private searchCache: Array<{corpusLower: string, indexStr: string, numberStr: string}> = [];
+  private resizeTimeout: any = null;
 
   public message = "Click colored boxes to see pensées text below. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset."
   // public message = ""
@@ -63,12 +66,45 @@ export class LiteBriteChartComponent implements OnInit {
 
   constructor() {}
 
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    // Debounce resize events to avoid excessive redraws
+    if (this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout);
+    }
+    this.resizeTimeout = setTimeout(() => {
+      this.handleResize();
+    }, 250);
+  }
+
+  private handleResize() {
+    if (!this.data) { return; }
+    // Remove existing SVG elements only within this component
+    d3.select(this.chartContainer.nativeElement).selectAll('svg').remove();
+    if (this.scatterplotContainer) {
+      d3.select(this.scatterplotContainer.nativeElement).selectAll('svg').remove();
+    }
+    // Rebuild and redraw
+    this.buildSvg();
+    this.drawLites();
+  }
+
   ngOnInit(){
     this.tooltip = d3.select('#container') // or d3.select('#bar')
       .append('div').attr('class', 'tooltip').style('display', 'none').style('opacity', 0);
     this.textviewer = d3.select('#text-viewer')
       .append('div').attr('class', 'text-viewer');
   };
+
+  ngOnDestroy() {
+    // Clean up resize timeout
+    if (this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout);
+    }
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
+    }
+  }
 
   ngOnChanges(): void {
     if (!this.data) { return; }
