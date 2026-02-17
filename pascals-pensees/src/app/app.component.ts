@@ -11,10 +11,10 @@ import { FragmentInterface } from './fragment';
 
 export class AppComponent {
   title = "Pascal's Pensées";
-  // subtitle = "Explore NLP clustering and topic modeling of Pascal's 924 pensées.";
-  instructions = "Explore NLP clustering and topic modeling of Pascal's 924 pensées. Each colored box represents one of Pascal's penseés, arranged chronologically. \
-  Each penseé has been assigned to 1 of 10 clusters by k-means clustering of their TF-IDF vector representations. Double click a box to recolor all boxes\
-  according to their topic-modeled similarity to the clicked pensée, from dark meaning most similar to light, meaning not related thematically."
+  instructions = "Explore NLP clustering and topic modeling of Pascal's 924 pensées.";
+  // instructions = "Explore NLP clustering and topic modeling of Pascal's 924 pensées. Each colored box represents one of Pascal's penseés, arranged chronologically. \
+  // Each penseé has been assigned to 1 of 10 clusters by k-means clustering of their TF-IDF vector representations. Double click a box to recolor all boxes\
+  // according to their topic-modeled similarity to the clicked pensée, from dark meaning most similar to light, meaning not related thematically."
   // instructions = "Explore NLP clustering and topic modeling of Pascal's 924 pensées. Each colored box represents one of Pascal's penseés, arranged chronologically as they were written. Each has been assigned to \
   // 1 of 10 clusters by k-means clustering of their TF-IDF vector representations. Because the boxes are arranged chronologically, one gets a sense of \
   // thematic relations across the work as a whole. Pascal died before this outline was edited, but with topic modelling we are able to better understand \
