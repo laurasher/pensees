@@ -188,7 +188,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
           .enter()
           .filter( (d: any) =>  d.cluster == ci )
           .append("g")
-          .attr('class', "scatter-cluster scatter-cluster-"+ci)
+          .attr('class', (d: any) => "scatter-cluster scatter-cluster-"+ci+" scatter-dot-"+d.fragment_index)
           .append("circle")
             .attr("cx", (d: any) => x(d.x0))
             .attr("cy", (d: any) => y(d.x1))
@@ -217,12 +217,40 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .style('background', "#f6efe3")
               .style('display', 'block').style('opacity', 0.99)
               .html(`cluster: ${_event.target.__data__['cluster']}<br>number: ${_event.target.__data__['fragment_number']}<br>index: ${_event.target.__data__['fragment_index']}<br>row: ${_event.target.__data__['row']}<br>col: ${_event.target.__data__['col']}`);
+            
+            // Dim all scatter dots to 50% opacity
+            scatter.selectAll(".scatter-cluster circle")
+              .transition().duration(100)
+              .attr("fill-opacity", 0.5)
+              .attr("stroke-opacity", 0.5);
+            
+            // Highlight the corresponding dot in the scatter plot
+            const fragmentIndex = _event.target.__data__['fragment_index'];
+            scatter.select(".scatter-dot-"+fragmentIndex)
+              .select("circle")
+              .transition().duration(100)
+              .attr("r", 4)
+              .attr("fill-opacity", 1)
+              .attr("stroke-opacity", 1);
           })
-          .on("mouseout", function (this: any) {
+          .on("mouseout", function (this: any, _event: any) {
             d3Select.select(this)
               // .style("stroke", function (d: any) {return cluster_color_map[d.cluster];})
             tooltip
               .style('display', 'none').style('opacity', 0);
+            
+            // Restore all scatter dots to full opacity
+            scatter.selectAll(".scatter-cluster circle")
+              .transition().duration(100)
+              .attr("fill-opacity", 1)
+              .attr("stroke-opacity", 1);
+            
+            // Remove highlight from the corresponding dot in the scatter plot
+            const fragmentIndex = _event.target.__data__['fragment_index'];
+            scatter.select(".scatter-dot-"+fragmentIndex)
+              .select("circle")
+              .transition().duration(100)
+              .attr("r", 1.6);
           })
           .on("click", function (this: any, _event: any, _d: any) {
             textviewer
