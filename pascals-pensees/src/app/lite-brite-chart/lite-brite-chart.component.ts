@@ -310,8 +310,8 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .html(highlightedText);
             //reset
             scatter.selectAll(".scatter-cluster")
-              .attr("fill-opacity", 0)
-              .attr("stroke-opacity", 0)
+              // .attr("fill-opacity", 0)
+              // .attr("stroke-opacity", 0)
 
             scatter.selectAll(".scatter-cluster-"+_d.cluster)
               .transition(d3.transition())
