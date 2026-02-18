@@ -495,6 +495,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     this.matchedIndices.clear();
     this.currentDisplayedPensee = null; // Clear currently displayed pensée
     
+    // Reset cluster filters to show all clusters
+    this.clusterFilters = new Set<number>(this.clusters);
+    
     // d3.select('svg').remove();
     this.scatter_svg_g.selectAll(".scatter-cluster")
       .attr("fill-opacity", 1)

@@ -29,7 +29,7 @@
               [class.active]="isClusterActive(cluster)"
               [style.background-color]="isClusterActive(cluster) ? getClusterColor(cluster) : '#e0e0e0'"
               (click)="toggleClusterFilter(cluster)">
-              {{ cluster }}
+              {{ cluster + 1 }}
             </div>
           </div>
           
