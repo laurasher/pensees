@@ -37,7 +37,7 @@ export class LiteBriteChartComponent implements OnInit {
   private svg: any;
   private tooltip: any;
   private textviewer: any;
-  private zoom: any;
+  private zoom: d3.ZoomBehavior<SVGSVGElement, unknown> | null = null;
   private cluster_color_map: any =  {
     0 : "#a6cee3",
     1 : "#1f78b4",
@@ -94,12 +94,12 @@ export class LiteBriteChartComponent implements OnInit {
               .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     // Add zoom behavior
-    this.zoom = d3.zoom()
+    this.zoom = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.5, 10])  // Min and max zoom levels
       .on("zoom", (event) => {
-        // Preserve the margin translation while applying zoom transform
+        // Apply zoom transform while preserving margin translation
         this.g.attr("transform", 
-          `translate(${this.margin.left + event.transform.x},${this.margin.top + event.transform.y}) scale(${event.transform.k})`
+          `translate(${this.margin.left},${this.margin.top}) translate(${event.transform.x},${event.transform.y}) scale(${event.transform.k})`
         );
       });
 
