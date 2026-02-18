@@ -41,6 +41,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   private NUM_CLUSTERS = 10;
   private MIN_ZOOM_SCALE = 0.5;
   private MAX_ZOOM_SCALE = 10;
+  private DEFAULT_DOT_RADIUS = 1.6;
+  private HIGHLIGHTED_DOT_RADIUS = 8;
+  private currentZoomScale = 1;
   private margin = {top: 0, right: 0, bottom: 0, left: 0};
   private width: number = 0;
   private scatter_svg_width: number = 0;
@@ -86,6 +89,8 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
 
   private handleResize() {
     if (!this.data) { return; }
+    // Reset zoom scale on resize
+    this.currentZoomScale = 1;
     // Remove existing SVG elements only within this component
     d3.select(this.chartContainer.nativeElement).selectAll('svg').remove();
     if (this.scatterplotContainer) {
@@ -170,10 +175,47 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
       .scaleExtent([this.MIN_ZOOM_SCALE, this.MAX_ZOOM_SCALE])
       .on("zoom", (event) => {
         this.scatter_zoom_g.attr("transform", event.transform);
+        // Track zoom scale and update dot radii
+        this.currentZoomScale = event.transform.k;
+        this.updateDotRadii();
       });
 
     this.scatter_svg.call(this.zoom);
 
+  }
+  
+  /**
+   * Calculate the scaled radius for dots based on current zoom level
+   * As zoom increases, dots should appear smaller
+   */
+  private getScaledRadius(baseRadius: number): number {
+    return baseRadius / this.currentZoomScale;
+  }
+  
+  /**
+   * Update all dot radii based on current zoom scale
+   */
+  private updateDotRadii(): void {
+    const scatter = this.scatter_zoom_g;
+    if (!scatter) return;
+    
+    const scaledRadius = this.getScaledRadius(this.DEFAULT_DOT_RADIUS);
+    const scaledHighlightRadius = this.getScaledRadius(this.HIGHLIGHTED_DOT_RADIUS);
+    
+    // Update all regular dots
+    scatter.selectAll(".scatter-cluster circle").each((d: any, i: number, nodes: any) => {
+      const circle = d3.select(nodes[i]);
+      const currentRadius = parseFloat(circle.attr("r"));
+      
+      // If this is a highlighted dot (radius 8), keep it highlighted with scaled radius
+      if (Math.abs(currentRadius - this.HIGHLIGHTED_DOT_RADIUS / (this.currentZoomScale / 1)) > 0.1) {
+        // Not highlighted, use regular scaled radius
+        circle.attr("r", scaledRadius);
+      } else {
+        // Highlighted, use scaled highlight radius
+        circle.attr("r", scaledHighlightRadius);
+      }
+    });
   }
   private drawLites() {
     const cluster_color_map = this.cluster_color_map;
@@ -215,7 +257,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             .attr("cx", (d: any) => x(d.x0))
             .attr("cy", (d: any) => y(d.x1))
             .transition(d3.transition(), 40000)
-            .attr("r", 1.6)
+            .attr("r", this.getScaledRadius(this.DEFAULT_DOT_RADIUS))
             .attr("fill", (d: any) => cluster_color_map[d.cluster])
             .attr("stroke", (d: any) => cluster_color_map[d.cluster])
     }
@@ -273,7 +315,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             scatter.select(".scatter-dot-"+fragmentIndex)
               .select("circle")
               .transition().duration(100)
-              .attr("r", 1.6);
+              .attr("r", this.getScaledRadius(this.DEFAULT_DOT_RADIUS));
           })
           .on("click", (_event: any, _d: any) => {
             // Store the currently displayed pensée
@@ -300,13 +342,13 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             // Reset all dots to default radius
             scatter.selectAll(".scatter-cluster circle")
               .transition().duration(100)
-              .attr("r", 1.6);
+              .attr("r", this.getScaledRadius(this.DEFAULT_DOT_RADIUS));
             
             // Highlight the selected pensée's dot with radius 8
             scatter.select(".scatter-dot-"+_d.fragment_index)
               .select("circle")
               .transition().duration(100)
-              .attr("r", 8);
+              .attr("r", this.getScaledRadius(this.HIGHLIGHTED_DOT_RADIUS));
           })
           .on("dblclick", function (this: any, _event: any, _d: any) {
             d3.selectAll(".lites")
@@ -523,6 +565,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     this.searchTerm = '';
     this.matchedIndices.clear();
     this.currentDisplayedPensee = null; // Clear currently displayed pensée
+    this.currentZoomScale = 1; // Reset zoom scale
     
     // d3.select('svg').remove();
     this.scatter_svg_g.selectAll(".scatter-cluster")
