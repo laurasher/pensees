@@ -19,7 +19,7 @@ export class LiteBriteChartComponent implements OnInit {
   private chartContainer: ElementRef;
   @Input() data: FragmentInterface | null = null;
 
-  public message = "Click colored boxes to see pensées text. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset the lite-brite chart."
+  public message = "Click colored boxes to see pensées text. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset the lite-brite chart. Use mouse wheel to zoom, drag to pan."
   public searchTerm: string = '';
   private matchedIndices: Set<number> = new Set();
   private square: number = 10;
@@ -37,6 +37,7 @@ export class LiteBriteChartComponent implements OnInit {
   private svg: any;
   private tooltip: any;
   private textviewer: any;
+  private zoom: any;
   private cluster_color_map: any =  {
     0 : "#a6cee3",
     1 : "#1f78b4",
@@ -91,6 +92,15 @@ export class LiteBriteChartComponent implements OnInit {
 
     this.g = this.svg.append("g")
               .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+    // Add zoom behavior
+    this.zoom = d3.zoom()
+      .scaleExtent([0.5, 10])  // Min and max zoom levels
+      .on("zoom", (event: any) => {
+        this.g.attr("transform", event.transform);
+      });
+
+    this.svg.call(this.zoom);
   }
   private drawLites() {
     const cluster_color_map = this.cluster_color_map;
