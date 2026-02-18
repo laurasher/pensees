@@ -103,7 +103,8 @@ export class LiteBriteChartComponent implements OnInit {
     const textviewer = d3.select('.text-viewer');
 
     // Filter data based on selected clusters
-    const filteredData = (this.data as any[]).filter((d: any) => this.selectedClusters.has(d.cluster));
+    const dataArray = this.data as unknown as any[];
+    const filteredData = dataArray.filter((d: any) => this.selectedClusters.has(d.cluster));
 
     this.g.selectAll("lites")
       .data(filteredData)
