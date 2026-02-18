@@ -252,9 +252,15 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .transition().duration(100)
               .attr("r", 1.6);
           })
-          .on("click", function (this: any, _event: any, _d: any) {
+          .on("click", (_event: any, _d: any) => {
+            // Get the color for this pensée's cluster
+            const penseeColor = cluster_color_map[_d.cluster];
+            
+            // Highlight search terms in the text with the pensée's color
+            const highlightedText = this.highlightSearchTerms(_d.corpus, penseeColor);
+            
             textviewer
-              .html(`${_d.corpus}`);
+              .html(highlightedText);
             //reset
             scatter.selectAll(".scatter-cluster")
               .attr("fill-opacity", 0)
@@ -275,6 +281,48 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .style("stroke-color", cluster_color_map[_d.cluster])
           })
 
+  }
+  
+  private highlightSearchTerms(text: string, color: string): string {
+    if (!this.searchTerm || this.searchTerm.trim() === '') {
+      return text;
+    }
+    
+    // Validate color format (hex colors only from cluster_color_map)
+    if (!/^#[0-9A-Fa-f]{6}$/.test(color)) {
+      // If color is invalid, return text without highlighting
+      return text;
+    }
+    
+    const searchLower = this.searchTerm.toLowerCase().trim();
+    const searchTerms = searchLower.split(/\s+/); // Split by whitespace to handle multiple words
+    
+    let highlightedText = text;
+    
+    // Highlight each search term
+    searchTerms.forEach(term => {
+      if (term.length === 0) return;
+      
+      // Escape special regex characters
+      const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      
+      // Create regex to match term case-insensitively
+      const regex = new RegExp(`(${escapedTerm})`, 'gi');
+      
+      // Replace matches with highlighted version
+      highlightedText = highlightedText.replace(regex, (match) => {
+        // Escape HTML entities in the match to prevent XSS
+        const escapedMatch = match
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+        return `<span style="background-color: ${color}; color: white; padding: 2px 4px; border-radius: 3px;">${escapedMatch}</span>`;
+      });
+    });
+    
+    return highlightedText;
   }
   
   public searchPensees() {
