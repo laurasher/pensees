@@ -66,8 +66,8 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     9 : "#3F5450",
   }
   
-  public clusterFilters: Set<number> = new Set<number>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
   public clusters: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  public clusterFilters: Set<number> = new Set<number>(this.clusters);
 
   constructor() {}
 
@@ -527,8 +527,6 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   }
   
   private applyClusterFilters() {
-    const cluster_color_map = this.cluster_color_map;
-    
     // Update lite-brite chart rectangles
     d3.selectAll('.lites').each((d: any, i: number, nodes: any) => {
       const isVisible = this.clusterFilters.has(d.cluster);
