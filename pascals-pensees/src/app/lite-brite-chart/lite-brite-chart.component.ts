@@ -50,6 +50,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   private contentHeight: number = 0;
   private g: any;
   private scatter_svg_g: any;
+  private scatter_zoom_g: any;
   private svg: any;
   private scatter_svg: any;
   private tooltip: any;
@@ -108,6 +109,10 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     if (this.searchDebounceTimer) {
       clearTimeout(this.searchDebounceTimer);
     }
+    // Clean up zoom behavior
+    if (this.scatter_svg && this.zoom) {
+      this.scatter_svg.on('.zoom', null);
+    }
   }
 
   ngOnChanges(): void {
@@ -154,12 +159,15 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
 
     this.g = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.scatter_svg_g = this.scatter_svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+    
+    // Create a nested group for zoom content to preserve margin transform
+    this.scatter_zoom_g = this.scatter_svg_g.append("g");
 
     // Add zoom behavior to scatterplot
     this.zoom = d3Zoom.zoom()
       .scaleExtent([0.5, 10])  // Allow zoom from 0.5x to 10x
       .on("zoom", (event) => {
-        this.scatter_svg_g.attr("transform", event.transform);
+        this.scatter_zoom_g.attr("transform", event.transform);
       });
 
     this.scatter_svg.call(this.zoom);
@@ -170,7 +178,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     const tooltip = d3.select('.tooltip')
       .style('display', 'none').style('opacity', 0);
     const textviewer = d3.select('.text-viewer');
-    const scatter = this.scatter_svg_g;
+    const scatter = this.scatter_zoom_g;
 
     this.g.selectAll("lites")
       .data(this.data)
