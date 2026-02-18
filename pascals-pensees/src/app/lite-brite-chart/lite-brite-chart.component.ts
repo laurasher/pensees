@@ -379,6 +379,11 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
       .attr('stroke', (d: any) => this.cluster_color_map[d.cluster])
       .attr('stroke-width', 1);
     
+    // Show all scatterplot dots
+    const allScatterDots = d3.selectAll('.scatter-cluster circle');
+    allScatterDots
+      .attr('opacity', 1);
+    
     this.previousMatchedIndices.clear();
     
     // If there's a pensée currently displayed, update its highlighting (remove highlights)
@@ -393,12 +398,16 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     const allRects = d3.selectAll('.lites');
     
     if (!hasMatches) {
-      // No matches - dim all rectangles instantly
+      // No matches - dim all rectangles and hide all scatterplot dots
       allRects
         .attr('fill-opacity', 0.3)
         .attr('stroke-opacity', 0.3)
         .attr('stroke', (d: any) => cluster_color_map[d.cluster])
         .attr('stroke-width', 1);
+      
+      // Hide all scatterplot dots
+      d3.selectAll('.scatter-cluster circle')
+        .attr('opacity', 0);
     } else {
       // Only update rectangles that changed state
       allRects.each((d: any, i: number, nodes: any) => {
@@ -417,6 +426,27 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
           .attr('stroke', cluster_color_map[d.cluster])
           .attr('stroke-width', 1);
       });
+      
+      // First, hide all scatterplot dots
+      d3.selectAll('.scatter-cluster circle')
+        .attr('opacity', 0);
+      
+      // Then, show only the matching dots using a combined selector
+      if (this.matchedIndices.size > 0) {
+        const selectors = Array.from(this.matchedIndices)
+          .map(index => {
+            const fragmentData = (this.data as any)[index];
+            return fragmentData ? `.scatter-dot-${fragmentData.fragment_index}` : null;
+          })
+          .filter(selector => selector !== null)
+          .join(', ');
+        
+        if (selectors) {
+          d3.selectAll(selectors)
+            .selectAll('circle')
+            .attr('opacity', 1);
+        }
+      }
     }
     
     // Update previous state
