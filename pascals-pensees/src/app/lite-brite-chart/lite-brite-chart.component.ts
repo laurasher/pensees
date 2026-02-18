@@ -230,7 +230,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             scatter.select(".scatter-dot-"+fragmentIndex)
               .select("circle")
               .transition().duration(100)
-              .attr("r", 4)
+              .attr("r", 8)
               .attr("fill-opacity", 1)
               .attr("stroke-opacity", 1);
           })
@@ -243,6 +243,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             // Restore all scatter dots to full opacity
             scatter.selectAll(".scatter-cluster circle")
               .transition().duration(100)
+              .attr("r", 1.6)
               .attr("fill-opacity", 1)
               .attr("stroke-opacity", 1);
             
