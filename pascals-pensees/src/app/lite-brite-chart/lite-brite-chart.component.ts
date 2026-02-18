@@ -184,7 +184,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
       .range([ this.scatter_svg_height, 0]);
 
     for (let ci=0; ci<this.NUM_CLUSTERS; ci++){
-      scatter.selectAll("dot")
+      const circles = scatter.selectAll("dot")
         .data(this.data)
           .enter()
           .filter( (d: any) =>  d.cluster == ci )
@@ -193,10 +193,47 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
           .append("circle")
             .attr("cx", (d: any) => x(d.x0))
             .attr("cy", (d: any) => y(d.x1))
-            .transition(d3.transition(), 40000)
             .attr("r", 1.6)
-            .attr("fill", (d: any) => cluster_color_map[d.cluster])
-            .attr("stroke", (d: any) => cluster_color_map[d.cluster])
+            .style("cursor", "pointer")
+            .on("click", (_event: any, _d: any) => {
+              // Store the currently displayed pensée
+              this.currentDisplayedPensee = _d;
+              
+              // Get the color for this pensée's cluster
+              const penseeColor = cluster_color_map[_d.cluster];
+              
+              // Highlight search terms in the text with the pensée's color
+              const highlightedText = this.highlightSearchTerms(_d.corpus, penseeColor);
+              
+              textviewer
+                .html(highlightedText);
+              
+              //reset
+              scatter.selectAll(".scatter-cluster")
+                .attr("fill-opacity", 0)
+                .attr("stroke-opacity", 0)
+
+              scatter.selectAll(".scatter-cluster-"+_d.cluster)
+                .transition(d3.transition())
+                .attr("fill-opacity", 1)
+                .attr("stroke-opacity", 1)
+              
+              // Reset all dots to default radius
+              scatter.selectAll(".scatter-cluster circle")
+                .transition().duration(100)
+                .attr("r", 1.6);
+              
+              // Highlight the selected pensée's dot with radius 8
+              scatter.select(".scatter-dot-"+_d.fragment_index)
+                .select("circle")
+                .transition().duration(100)
+                .attr("r", 8);
+            });
+      
+      // Apply transition to fill and stroke after setting up the event handlers
+      circles.transition(d3.transition(), 40000)
+        .attr("fill", (d: any) => cluster_color_map[d.cluster])
+        .attr("stroke", (d: any) => cluster_color_map[d.cluster]);
     }
 
     let color_amplifier = 5;
