@@ -408,7 +408,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
       
       // Hide all scatterplot dots
       d3.selectAll('.scatter-cluster circle')
-        .attr('opacity', 0);
+        .attr('opacity', 0.3);
     } else {
       // Only update rectangles that changed state
       allRects.each((d: any, i: number, nodes: any) => {
@@ -430,7 +430,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
       
       // First, hide all scatterplot dots
       d3.selectAll('.scatter-cluster circle')
-        .attr('opacity', 0);
+        .attr('opacity', 0.1);
       
       // Then, show only the matching dots using a combined selector
       if (this.matchedIndices.size > 0) {
