@@ -214,14 +214,14 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
                 .html(highlightedText);
               
               //reset
-              scatter.selectAll(".scatter-cluster")
-                .attr("fill-opacity", 0)
-                .attr("stroke-opacity", 0)
+              // scatter.selectAll(".scatter-cluster")
+              //   .attr("fill-opacity", 0)
+              //   .attr("stroke-opacity", 0)
 
-              scatter.selectAll(".scatter-cluster-"+_d.cluster)
-                .transition(d3.transition())
-                .attr("fill-opacity", 1)
-                .attr("stroke-opacity", 1)
+              // scatter.selectAll(".scatter-cluster-"+_d.cluster)
+              //   .transition(d3.transition())
+              //   .attr("fill-opacity", 1)
+              //   .attr("stroke-opacity", 1)
               
               // Reset all dots to default radius
               scatter.selectAll(".scatter-cluster circle")
@@ -309,14 +309,14 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             textviewer
               .html(highlightedText);
             //reset
-            scatter.selectAll(".scatter-cluster")
-              // .attr("fill-opacity", 0)
-              // .attr("stroke-opacity", 0)
+            // scatter.selectAll(".scatter-cluster")
+            //   .attr("fill-opacity", 0)
+            //   .attr("stroke-opacity", 0)
 
-            scatter.selectAll(".scatter-cluster-"+_d.cluster)
-              .transition(d3.transition())
-              .attr("fill-opacity", 1)
-              .attr("stroke-opacity", 1)
+            // scatter.selectAll(".scatter-cluster-"+_d.cluster)
+            //   .transition(d3.transition())
+            //   .attr("fill-opacity", 1)
+            //   .attr("stroke-opacity", 1)
             
             // Reset all dots to default radius
             scatter.selectAll(".scatter-cluster circle")
