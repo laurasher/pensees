@@ -25,6 +25,9 @@ export class LiteBriteChartComponent implements OnInit {
   private square: number = 10;
   private squareBuffer: number = 0;
   private url: string = '/assets/pensee_clusters.json';
+  public selectedClusters: Set<number> = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  public clusters: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  private zoom: any;
 
   private margin = {top: 0, right: 0, bottom: 0, left: 0};
   private width: number = 0;
@@ -91,6 +94,15 @@ export class LiteBriteChartComponent implements OnInit {
 
     this.g = this.svg.append("g")
               .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+    
+    // Add zoom behavior
+    this.zoom = d3.zoom()
+      .scaleExtent([0.5, 10])
+      .on('zoom', (event) => {
+        this.g.attr('transform', event.transform);
+      });
+    
+    this.svg.call(this.zoom);
   }
   private drawLites() {
     const cluster_color_map = this.cluster_color_map;
@@ -111,6 +123,7 @@ export class LiteBriteChartComponent implements OnInit {
         .attr('height', this.adjustHeight)
         .attr("fill", "white")
         .attr("stroke", "white")
+        .attr("data-cluster", (d: any) => d.cluster)
         .transition(d3.transition(), 40000)
         .attr("fill", (d: any) => cluster_color_map[d.cluster])
         .attr("stroke", (d: any) => cluster_color_map[d.cluster])
@@ -126,6 +139,7 @@ export class LiteBriteChartComponent implements OnInit {
           .attr('height', this.adjustHeight)
           .attr("fill", "white")
           .attr("fill-opacity", 0)
+          .attr("data-cluster", (d: any) => d.cluster)
           .on("dblclick", function (this: any, _event: any, _d: any) {
             d3.selectAll(".lites-overlay")
             .attr("fill-opacity", 0)
@@ -158,7 +172,9 @@ export class LiteBriteChartComponent implements OnInit {
               .style("stroke-opacity", (d: any) => d)
               .style("stroke-color", cluster_color_map[_d.cluster])
           })
-
+    
+    // Apply initial cluster filter
+    this.applyClusterFilter();
   }
   
   public searchPensees(): void {
@@ -214,5 +230,37 @@ export class LiteBriteChartComponent implements OnInit {
     this.buildSvg();
     this.drawLites();
     // d3.select('.text-viewer').html(``);
+  }
+  
+  public toggleCluster(cluster: number): void {
+    if (this.selectedClusters.has(cluster)) {
+      this.selectedClusters.delete(cluster);
+    } else {
+      this.selectedClusters.add(cluster);
+    }
+    this.applyClusterFilter();
+  }
+  
+  public isClusterSelected(cluster: number): boolean {
+    return this.selectedClusters.has(cluster);
+  }
+  
+  public getClusterColor(cluster: number): string {
+    return this.cluster_color_map[cluster];
+  }
+  
+  private applyClusterFilter(): void {
+    // Apply cluster filter to both lites and lites-overlay
+    d3.selectAll(".lites")
+      .style("display", (d: any) => this.selectedClusters.has(d.cluster) ? null : "none");
+    
+    d3.selectAll(".lites-overlay")
+      .style("display", (d: any) => this.selectedClusters.has(d.cluster) ? null : "none");
+  }
+  
+  public resetZoom(): void {
+    if (this.svg && this.zoom) {
+      this.svg.transition().duration(750).call(this.zoom.transform, d3.zoomIdentity);
+    }
   }
 }

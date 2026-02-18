@@ -38,6 +38,79 @@
     color: #333;
   }
 }
+#cluster-pills-container {
+  position: absolute;
+  top: 6vh;
+  left: 2vw;
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  z-index: 1000;
+  background: white;
+  border-radius: 25px;
+  padding: 0.5vh 1vw;
+  box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 7px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
+}
+.cluster-pill-label {
+  font-family: "Effra Rg" !important;
+  font-size: 0.85vw;
+  color: #666;
+  margin-right: 0.3vw;
+}
+.cluster-pill {
+  min-width: 2vw;
+  height: 2vw;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: "Effra Rg" !important;
+  font-size: 0.75vw;
+  font-weight: bold;
+  color: white;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  
+  &.active {
+    border: 2px solid #333;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  }
+  
+  &:not(.active) {
+    opacity: 0.5;
+    color: #666;
+  }
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+.reset-zoom-btn {
+  background: #f0f0f0;
+  border: none;
+  border-radius: 50%;
+  width: 2vw;
+  height: 2vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 0.5vw;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #e0e0e0;
+    transform: scale(1.1);
+  }
+  
+  .mat-icon {
+    font-size: 1.2vw;
+    width: 1.2vw;
+    height: 1.2vw;
+    color: #666;
+  }
+}
 #subcontainer {
   display: grid;
   height: 100%;
