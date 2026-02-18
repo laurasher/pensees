@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 
 import * as d3 from 'd3';
 import * as d3Select from 'd3-selection';
+import * as d3Zoom from 'd3-zoom';
 
 import { FragmentInterface } from '../fragment';
 
@@ -53,6 +54,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   private scatter_svg: any;
   private tooltip: any;
   private textviewer: any;
+  private zoom: any;
   private cluster_color_map: any =  {
     0 : "#D3BCBC",
     1 : "#DA6627",
@@ -152,6 +154,15 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
 
     this.g = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.scatter_svg_g = this.scatter_svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+    // Add zoom behavior to scatterplot
+    this.zoom = d3Zoom.zoom()
+      .scaleExtent([0.5, 10])  // Allow zoom from 0.5x to 10x
+      .on("zoom", (event) => {
+        this.scatter_svg_g.attr("transform", event.transform);
+      });
+
+    this.scatter_svg.call(this.zoom);
 
   }
   private drawLites() {
