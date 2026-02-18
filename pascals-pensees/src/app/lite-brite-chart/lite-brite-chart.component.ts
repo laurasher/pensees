@@ -49,8 +49,8 @@ export class LiteBriteChartComponent implements OnInit {
     8 : "#cab2d6",
     9 : "#6a3d9a",
   }
-  public selectedClusters: Set<number> = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-  public clusterNumbers: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  public clusterNumbers: number[] = Object.keys(this.cluster_color_map).map(Number);
+  public selectedClusters: Set<number> = new Set(this.clusterNumbers);
   NEEDS_RESET: boolean = false;
 
   constructor() {}
