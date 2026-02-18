@@ -66,7 +66,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     9 : "#3F5450",
   }
   
-  public clusters: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  public clusters: number[] = Array.from({length: 10}, (_, i) => i);
   public clusterFilters: Set<number> = new Set<number>(this.clusters);
 
   constructor() {}
@@ -539,7 +539,8 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     // Update scatterplot dots
     for (let ci = 0; ci < this.NUM_CLUSTERS; ci++) {
       const isVisible = this.clusterFilters.has(ci);
-      d3.selectAll('.scatter-cluster-' + ci)
+      const clusterSelector = '.scatter-cluster-' + ci;
+      d3.selectAll(clusterSelector)
         .selectAll('circle')
         .transition()
         .duration(200)
