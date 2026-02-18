@@ -29,6 +29,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   private searchDebounceTimer: any = null;
   private searchCache: Array<{corpusLower: string, indexStr: string, numberStr: string}> = [];
   private resizeTimeout: any = null;
+  private currentDisplayedPensee: any = null; // Track currently displayed pensée for dynamic highlighting
 
   public message = "Click colored boxes to see pensées text below. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset."
   // public message = ""
@@ -253,6 +254,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .attr("r", 1.6);
           })
           .on("click", (_event: any, _d: any) => {
+            // Store the currently displayed pensée
+            this.currentDisplayedPensee = _d;
+            
             // Get the color for this pensée's cluster
             const penseeColor = cluster_color_map[_d.cluster];
             
@@ -361,6 +365,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     
     // Apply highlighting to existing rectangles
     this.applySearchHighlighting();
+    
+    // If there's a pensée currently displayed, update its highlighting
+    this.updateTextViewerHighlighting();
   }
   
   private resetSearchHighlighting() {
@@ -373,6 +380,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
       .attr('stroke-width', 1);
     
     this.previousMatchedIndices.clear();
+    
+    // If there's a pensée currently displayed, update its highlighting (remove highlights)
+    this.updateTextViewerHighlighting();
   }
   
   private applySearchHighlighting() {
@@ -413,6 +423,25 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     this.previousMatchedIndices = new Set(this.matchedIndices);
   }
   
+  private updateTextViewerHighlighting() {
+    // Only update if there's a pensée currently displayed
+    if (!this.currentDisplayedPensee) {
+      return;
+    }
+    
+    // Get the text viewer element
+    const textviewer = d3.select('.text-viewer');
+    
+    // Get the color for the currently displayed pensée's cluster
+    const penseeColor = this.cluster_color_map[this.currentDisplayedPensee.cluster];
+    
+    // Re-apply highlighting with current search term
+    const highlightedText = this.highlightSearchTerms(this.currentDisplayedPensee.corpus, penseeColor);
+    
+    // Update the text viewer
+    textviewer.html(highlightedText);
+  }
+  
   public clearSearch() {
     this.searchTerm = '';
     this.matchedIndices.clear();
@@ -430,6 +459,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     // Clear search state
     this.searchTerm = '';
     this.matchedIndices.clear();
+    this.currentDisplayedPensee = null; // Clear currently displayed pensée
     
     // d3.select('svg').remove();
     this.scatter_svg_g.selectAll(".scatter-cluster")
