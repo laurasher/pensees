@@ -422,12 +422,12 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     if (!hasMatches) {
       // No matches - dim all rectangles and hide all scatterplot dots
       if (this.isDoubleClickActive && this.doubleClickedPensee) {
-        // In double-click mode, apply dimming to the similarity-based opacity
+        // In double-click mode, completely hide all rectangles when no matches
         allRects
           .data(this.doubleClickedPensee.sim_arr)
           .attr('fill', cluster_color_map[this.doubleClickedPensee.cluster])
-          .attr('fill-opacity', (d: any) => (d * color_amplifier) * 0.3)
-          .attr('stroke-opacity', (d: any) => (d * color_amplifier) * 0.3)
+          .attr('fill-opacity', 0)
+          .attr('stroke-opacity', 0)
           .attr('stroke', cluster_color_map[this.doubleClickedPensee.cluster])
           .attr('stroke-width', 1);
       } else {
@@ -468,11 +468,11 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
                 .attr('stroke', cluster_color_map[this.doubleClickedPensee.cluster])
                 .attr('stroke-width', 1);
             } else {
-              // For non-matches, dim the similarity-based opacity
+              // For non-matches in double-click mode, completely hide them
               rect
                 .attr('fill', cluster_color_map[this.doubleClickedPensee.cluster])
-                .attr('fill-opacity', (d * color_amplifier) * 0.3)
-                .attr('stroke-opacity', (d * color_amplifier) * 0.3)
+                .attr('fill-opacity', 0)
+                .attr('stroke-opacity', 0)
                 .attr('stroke', cluster_color_map[this.doubleClickedPensee.cluster])
                 .attr('stroke-width', 1);
             }
