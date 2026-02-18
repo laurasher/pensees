@@ -130,7 +130,7 @@ svg {
 #cluster-scatterplot {
   // outline: 2px dotted red;
   // margin-top: 3%;
-  margin-top: 2vh;
+  margin-top: 1vh;
   // height: 42%;
   height: calc(40vh - @side-panel-spacing);
   min-height: @side-panel-min-height;
@@ -139,6 +139,46 @@ svg {
   
   &.hidden {
     display: none;
+  }
+}
+
+#cluster-pills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5vw;
+  margin-bottom: 1vh;
+  margin-top: 2vh;
+  align-items: center;
+}
+
+.cluster-pill {
+  padding: 0.4vw 0.8vw;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.75vw;
+  font-weight: 600;
+  color: white;
+  transition: all 0.2s ease;
+  box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px;
+  user-select: none;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: rgba(50, 50, 105, 0.25) 0px 4px 8px 0px;
+  }
+  
+  &:active {
+    transform: translateY(0px);
+  }
+  
+  &:not(.active) {
+    background-color: #e0e0e0 !important;
+    color: #666;
+    opacity: 0.6;
+    
+    &:hover {
+      opacity: 0.8;
+    }
   }
 }
 .tooltip {

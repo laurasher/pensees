@@ -65,6 +65,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     8 : "#937F7F",
     9 : "#3F5450",
   }
+  
+  public clusterFilters: Set<number> = new Set<number>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  public clusters: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   constructor() {}
 
@@ -504,6 +507,46 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
 
   public toggleTextViewer() {
     this.isTextViewerExpanded = !this.isTextViewerExpanded;
+  }
+  
+  public toggleClusterFilter(cluster: number) {
+    if (this.clusterFilters.has(cluster)) {
+      this.clusterFilters.delete(cluster);
+    } else {
+      this.clusterFilters.add(cluster);
+    }
+    this.applyClusterFilters();
+  }
+  
+  public isClusterActive(cluster: number): boolean {
+    return this.clusterFilters.has(cluster);
+  }
+  
+  public getClusterColor(cluster: number): string {
+    return this.cluster_color_map[cluster];
+  }
+  
+  private applyClusterFilters() {
+    const cluster_color_map = this.cluster_color_map;
+    
+    // Update lite-brite chart rectangles
+    d3.selectAll('.lites').each((d: any, i: number, nodes: any) => {
+      const isVisible = this.clusterFilters.has(d.cluster);
+      d3.select(nodes[i])
+        .transition()
+        .duration(200)
+        .attr('opacity', isVisible ? 1 : 0.1);
+    });
+    
+    // Update scatterplot dots
+    for (let ci = 0; ci < this.NUM_CLUSTERS; ci++) {
+      const isVisible = this.clusterFilters.has(ci);
+      d3.selectAll('.scatter-cluster-' + ci)
+        .selectAll('circle')
+        .transition()
+        .duration(200)
+        .attr('opacity', isVisible ? 1 : 0.1);
+    }
   }
   // public refreshLiteBritesChart(){
   //   d3.select('svg').remove();
