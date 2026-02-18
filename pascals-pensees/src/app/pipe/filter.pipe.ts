@@ -13,7 +13,7 @@ export class FilterPipe implements PipeTransform {
     }
 
     if (_.isNil(matchText) || matchText === '') {
-      return values;
+      return Array.isArray(values) ? values : [];
     }
 
     matchText = matchText.toLowerCase();

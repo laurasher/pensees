@@ -30,6 +30,8 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   private searchCache: Array<{corpusLower: string, indexStr: string, numberStr: string}> = [];
   private resizeTimeout: any = null;
   private currentDisplayedPensee: any = null; // Track currently displayed pensée for dynamic highlighting
+  private isDoubleClickActive: boolean = false; // Track if double-click similarity mode is active
+  private doubleClickedPensee: any = null; // Store the pensée that was double-clicked
 
   public message = "Click colored boxes to see pensées text below. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset."
   // public message = ""
@@ -325,6 +327,10 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .attr("r", 8);
           })
           .on("dblclick", function (this: any, _event: any, _d: any) {
+            // Set double-click state
+            this.isDoubleClickActive = true;
+            this.doubleClickedPensee = _d;
+            
             d3.selectAll(".lites")
               .data(_d.sim_arr)
               .transition(d3.transition())
@@ -332,7 +338,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .attr("fill-opacity", (d: any) =>    d*color_amplifier)
               .style("stroke-opacity", (d: any) => d*color_amplifier)
               .style("stroke-color", cluster_color_map[_d.cluster])
-          })
+          }.bind(this))
 
   }
   
@@ -420,13 +426,27 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   }
   
   private resetSearchHighlighting() {
-    // Reset all rectangles to normal appearance without transitions for instant feedback
+    const cluster_color_map = this.cluster_color_map;
     const allRects = d3.selectAll('.lites');
-    allRects
-      .attr('fill-opacity', 1)
-      .attr('stroke-opacity', 1)
-      .attr('stroke', (d: any) => this.cluster_color_map[d.cluster])
-      .attr('stroke-width', 1);
+    
+    // If double-click mode is active, restore the similarity-based opacity
+    if (this.isDoubleClickActive && this.doubleClickedPensee) {
+      const color_amplifier = 5;
+      allRects
+        .data(this.doubleClickedPensee.sim_arr)
+        .attr('fill', cluster_color_map[this.doubleClickedPensee.cluster])
+        .attr('fill-opacity', (d: any) => d * color_amplifier)
+        .attr('stroke-opacity', (d: any) => d * color_amplifier)
+        .attr('stroke', cluster_color_map[this.doubleClickedPensee.cluster])
+        .attr('stroke-width', 1);
+    } else {
+      // No double-click active, reset to normal appearance
+      allRects
+        .attr('fill-opacity', 1)
+        .attr('stroke-opacity', 1)
+        .attr('stroke', (d: any) => cluster_color_map[d.cluster])
+        .attr('stroke-width', 1);
+    }
     
     // Show all scatterplot dots
     const allScatterDots = d3.selectAll('.scatter-cluster circle');
@@ -442,39 +462,88 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   private applySearchHighlighting() {
     const hasMatches = this.matchedIndices.size > 0;
     const cluster_color_map = this.cluster_color_map;
+    const color_amplifier = 5;
     
     // Get all rectangles once
     const allRects = d3.selectAll('.lites');
     
     if (!hasMatches) {
       // No matches - dim all rectangles and hide all scatterplot dots
-      allRects
-        .attr('fill-opacity', 0.3)
-        .attr('stroke-opacity', 0.3)
-        .attr('stroke', (d: any) => cluster_color_map[d.cluster])
-        .attr('stroke-width', 1);
+      if (this.isDoubleClickActive && this.doubleClickedPensee) {
+        // In double-click mode, completely hide all rectangles when no matches
+        allRects
+          .data(this.doubleClickedPensee.sim_arr)
+          .attr('fill', cluster_color_map[this.doubleClickedPensee.cluster])
+          .attr('fill-opacity', 0)
+          .attr('stroke-opacity', 0)
+          .attr('stroke', cluster_color_map[this.doubleClickedPensee.cluster])
+          .attr('stroke-width', 1);
+      } else {
+        // Normal mode, just dim everything
+        allRects
+          .attr('fill-opacity', 0.3)
+          .attr('stroke-opacity', 0.3)
+          .attr('stroke', (d: any) => cluster_color_map[d.cluster])
+          .attr('stroke-width', 1);
+      }
       
       // Hide all scatterplot dots
       d3.selectAll('.scatter-cluster circle')
         .attr('opacity', 0.3);
     } else {
-      // Only update rectangles that changed state
-      allRects.each((d: any, i: number, nodes: any) => {
-        const isMatch = this.matchedIndices.has(i);
-        const wasMatch = this.previousMatchedIndices.has(i);
-        
-        // Skip if state hasn't changed
-        if (isMatch === wasMatch && this.previousMatchedIndices.size > 0) {
-          return;
-        }
-        
-        // Update only changed rectangles
-        d3.select(nodes[i])
-          .attr('fill-opacity', isMatch ? 1 : 0.3)
-          .attr('stroke-opacity', isMatch ? 1 : 0.3)
-          .attr('stroke', cluster_color_map[d.cluster])
-          .attr('stroke-width', 1);
-      });
+      // Has matches - show matching rectangles with appropriate opacity
+      if (this.isDoubleClickActive && this.doubleClickedPensee) {
+        // In double-click mode, preserve similarity-based opacity for matches, dim non-matches
+        allRects
+          .data(this.doubleClickedPensee.sim_arr)
+          .each((d: any, i: number, nodes: any) => {
+            const isMatch = this.matchedIndices.has(i);
+            const wasMatch = this.previousMatchedIndices.has(i);
+            
+            // Skip if state hasn't changed
+            if (isMatch === wasMatch && this.previousMatchedIndices.size > 0) {
+              return;
+            }
+            
+            // Update only changed rectangles
+            const rect = d3.select(nodes[i]);
+            if (isMatch) {
+              // For matches, use the similarity-based opacity from double-click
+              rect
+                .attr('fill', cluster_color_map[this.doubleClickedPensee.cluster])
+                .attr('fill-opacity', d * color_amplifier)
+                .attr('stroke-opacity', d * color_amplifier)
+                .attr('stroke', cluster_color_map[this.doubleClickedPensee.cluster])
+                .attr('stroke-width', 1);
+            } else {
+              // For non-matches in double-click mode, completely hide them
+              rect
+                .attr('fill', cluster_color_map[this.doubleClickedPensee.cluster])
+                .attr('fill-opacity', 0)
+                .attr('stroke-opacity', 0)
+                .attr('stroke', cluster_color_map[this.doubleClickedPensee.cluster])
+                .attr('stroke-width', 1);
+            }
+          });
+      } else {
+        // Normal mode - just show/dim based on matches
+        allRects.each((d: any, i: number, nodes: any) => {
+          const isMatch = this.matchedIndices.has(i);
+          const wasMatch = this.previousMatchedIndices.has(i);
+          
+          // Skip if state hasn't changed
+          if (isMatch === wasMatch && this.previousMatchedIndices.size > 0) {
+            return;
+          }
+          
+          // Update only changed rectangles
+          d3.select(nodes[i])
+            .attr('fill-opacity', isMatch ? 1 : 0.3)
+            .attr('stroke-opacity', isMatch ? 1 : 0.3)
+            .attr('stroke', cluster_color_map[d.cluster])
+            .attr('stroke-width', 1);
+        });
+      }
       
       // First, hide all scatterplot dots
       d3.selectAll('.scatter-cluster circle')
@@ -539,6 +608,8 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     this.searchTerm = '';
     this.matchedIndices.clear();
     this.currentDisplayedPensee = null; // Clear currently displayed pensée
+    this.isDoubleClickActive = false; // Clear double-click state
+    this.doubleClickedPensee = null; // Clear double-clicked pensée
     
     // d3.select('svg').remove();
     this.scatter_svg_g.selectAll(".scatter-cluster")
