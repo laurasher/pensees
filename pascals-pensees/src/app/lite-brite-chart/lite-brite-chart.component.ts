@@ -49,6 +49,8 @@ export class LiteBriteChartComponent implements OnInit {
     8 : "#cab2d6",
     9 : "#6a3d9a",
   }
+  public selectedClusters: Set<number> = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  public clusterNumbers: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   NEEDS_RESET: boolean = false;
 
   constructor() {}
@@ -100,8 +102,11 @@ export class LiteBriteChartComponent implements OnInit {
 
     const textviewer = d3.select('.text-viewer');
 
+    // Filter data based on selected clusters
+    const filteredData = (this.data as any[]).filter((d: any) => this.selectedClusters.has(d.cluster));
+
     this.g.selectAll("lites")
-      .data(this.data)
+      .data(filteredData)
       .enter()
       .append("rect")
         .attr("class", "lites")
@@ -116,7 +121,7 @@ export class LiteBriteChartComponent implements OnInit {
         .attr("stroke", (d: any) => cluster_color_map[d.cluster])
 
     this.g.selectAll("lites-overlay")
-      .data(this.data)
+      .data(filteredData)
         .enter()
         .append("rect")
           .attr("class", "lites-overlay")
@@ -214,5 +219,22 @@ export class LiteBriteChartComponent implements OnInit {
     this.buildSvg();
     this.drawLites();
     // d3.select('.text-viewer').html(``);
+  }
+
+  public toggleCluster(cluster: number): void {
+    if (this.selectedClusters.has(cluster)) {
+      this.selectedClusters.delete(cluster);
+    } else {
+      this.selectedClusters.add(cluster);
+    }
+    this.refreshLiteBritesChart();
+  }
+
+  public isClusterSelected(cluster: number): boolean {
+    return this.selectedClusters.has(cluster);
+  }
+
+  public getClusterColor(cluster: number): string {
+    return this.cluster_color_map[cluster];
   }
 }

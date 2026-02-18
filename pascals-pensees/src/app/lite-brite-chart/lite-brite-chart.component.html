@@ -14,6 +14,17 @@
             *ngIf="searchTerm"
         >close</mat-icon>
     </div>
+    <div id="cluster-pills-container">
+        <div 
+            *ngFor="let cluster of clusterNumbers"
+            class="cluster-pill"
+            [class.selected]="isClusterSelected(cluster)"
+            [style.background-color]="getClusterColor(cluster)"
+            (click)="toggleCluster(cluster)"
+        >
+            Cluster {{ cluster }}
+        </div>
+    </div>
     <mat-icon id="refresh-icon" (click)="refreshLiteBrites()">refresh</mat-icon>
     <div class="tooltip"></div>
     <div id="subcontainer">
