@@ -230,7 +230,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             scatter.select(".scatter-dot-"+fragmentIndex)
               .select("circle")
               .transition().duration(100)
-              .attr("r", 8)
+              // .attr("r", 8)
               .attr("fill-opacity", 1)
               .attr("stroke-opacity", 1);
           })
@@ -243,7 +243,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             // Restore all scatter dots to full opacity
             scatter.selectAll(".scatter-cluster circle")
               .transition().duration(100)
-              .attr("r", 1.6)
+              // .attr("r", 1.6)
               .attr("fill-opacity", 1)
               .attr("stroke-opacity", 1);
             
@@ -275,6 +275,17 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .transition(d3.transition())
               .attr("fill-opacity", 1)
               .attr("stroke-opacity", 1)
+            
+            // Reset all dots to default radius
+            scatter.selectAll(".scatter-cluster circle")
+              .transition().duration(100)
+              .attr("r", 1.6);
+            
+            // Highlight the selected pensée's dot with radius 8
+            scatter.select(".scatter-dot-"+_d.fragment_index)
+              .select("circle")
+              .transition().duration(100)
+              .attr("r", 8);
           })
           .on("dblclick", function (this: any, _event: any, _d: any) {
             d3.selectAll(".lites")
