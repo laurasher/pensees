@@ -96,8 +96,11 @@ export class LiteBriteChartComponent implements OnInit {
     // Add zoom behavior
     this.zoom = d3.zoom()
       .scaleExtent([0.5, 10])  // Min and max zoom levels
-      .on("zoom", (event: any) => {
-        this.g.attr("transform", event.transform);
+      .on("zoom", (event) => {
+        // Preserve the margin translation while applying zoom transform
+        this.g.attr("transform", 
+          `translate(${this.margin.left + event.transform.x},${this.margin.top + event.transform.y}) scale(${event.transform.k})`
+        );
       });
 
     this.svg.call(this.zoom);
