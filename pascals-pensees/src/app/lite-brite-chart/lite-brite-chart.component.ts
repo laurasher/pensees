@@ -39,6 +39,8 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   private squareBuffer: number = 0;
 
   private NUM_CLUSTERS = 10;
+  private MIN_ZOOM_SCALE = 0.5;
+  private MAX_ZOOM_SCALE = 10;
   private margin = {top: 0, right: 0, bottom: 0, left: 0};
   private width: number = 0;
   private scatter_svg_width: number = 0;
@@ -165,7 +167,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
 
     // Add zoom behavior to scatterplot
     this.zoom = d3Zoom.zoom()
-      .scaleExtent([0.5, 10])  // Allow zoom from 0.5x to 10x
+      .scaleExtent([this.MIN_ZOOM_SCALE, this.MAX_ZOOM_SCALE])
       .on("zoom", (event) => {
         this.scatter_zoom_g.attr("transform", event.transform);
       });
