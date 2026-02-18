@@ -202,18 +202,19 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     const scaledRadius = this.getScaledRadius(this.DEFAULT_DOT_RADIUS);
     const scaledHighlightRadius = this.getScaledRadius(this.HIGHLIGHTED_DOT_RADIUS);
     
-    // Update all regular dots
+    // Update all dots - check if they are highlighted by comparing to the highlight ratio
     scatter.selectAll(".scatter-cluster circle").each((d: any, i: number, nodes: any) => {
       const circle = d3.select(nodes[i]);
       const currentRadius = parseFloat(circle.attr("r"));
       
-      // If this is a highlighted dot (radius 8), keep it highlighted with scaled radius
-      if (Math.abs(currentRadius - this.HIGHLIGHTED_DOT_RADIUS / (this.currentZoomScale / 1)) > 0.1) {
-        // Not highlighted, use regular scaled radius
-        circle.attr("r", scaledRadius);
-      } else {
-        // Highlighted, use scaled highlight radius
+      // Check if this dot is highlighted by comparing its ratio to the expected ratios
+      // A highlighted dot should have a radius about 5x larger than a regular dot (8/1.6 = 5)
+      const isHighlighted = currentRadius > scaledRadius * 2; // Use threshold of 2x to catch highlighted dots
+      
+      if (isHighlighted) {
         circle.attr("r", scaledHighlightRadius);
+      } else {
+        circle.attr("r", scaledRadius);
       }
     });
   }
