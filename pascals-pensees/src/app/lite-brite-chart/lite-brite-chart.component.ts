@@ -67,6 +67,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     8 : "#937F7F",
     9 : "#3F5450",
   }
+  
+  public clusters: number[] = Array.from({length: 10}, (_, i) => i);
+  public clusterFilters: Set<number> = new Set<number>(this.clusters);
 
   constructor() {}
 
@@ -611,6 +614,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     this.isDoubleClickActive = false; // Clear double-click state
     this.doubleClickedPensee = null; // Clear double-clicked pensée
     
+    // Reset cluster filters to show all clusters
+    this.clusterFilters = new Set<number>(this.clusters);
+    
     // d3.select('svg').remove();
     this.scatter_svg_g.selectAll(".scatter-cluster")
       .attr("fill-opacity", 1)
@@ -623,6 +629,45 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
 
   public toggleTextViewer() {
     this.isTextViewerExpanded = !this.isTextViewerExpanded;
+  }
+  
+  public toggleClusterFilter(cluster: number) {
+    if (this.clusterFilters.has(cluster)) {
+      this.clusterFilters.delete(cluster);
+    } else {
+      this.clusterFilters.add(cluster);
+    }
+    this.applyClusterFilters();
+  }
+  
+  public isClusterActive(cluster: number): boolean {
+    return this.clusterFilters.has(cluster);
+  }
+  
+  public getClusterColor(cluster: number): string {
+    return this.cluster_color_map[cluster];
+  }
+  
+  private applyClusterFilters() {
+    // Update lite-brite chart rectangles
+    d3.selectAll('.lites').each((d: any, i: number, nodes: any) => {
+      const isVisible = this.clusterFilters.has(d.cluster);
+      d3.select(nodes[i])
+        .transition()
+        .duration(200)
+        .attr('opacity', isVisible ? 1 : 0.1);
+    });
+    
+    // Update scatterplot dots
+    for (let ci = 0; ci < this.NUM_CLUSTERS; ci++) {
+      const isVisible = this.clusterFilters.has(ci);
+      const clusterSelector = '.scatter-cluster-' + ci;
+      d3.selectAll(clusterSelector)
+        .selectAll('circle')
+        .transition()
+        .duration(200)
+        .attr('opacity', isVisible ? 1 : 0.1);
+    }
   }
   // public refreshLiteBritesChart(){
   //   d3.select('svg').remove();
