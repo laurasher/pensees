@@ -153,7 +153,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     this.contentWidth = this.width - this.margin.left - this.margin.right;
     this.contentHeight = this.height - this.margin.top - this.margin.bottom;
     this.adjustWidth = this.contentWidth/44;
-    this.adjustHeight = this.contentHeight/21;
+    this.adjustHeight = this.contentHeight/21.5;
 
     this.g = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.scatter_svg_g = this.scatter_svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
