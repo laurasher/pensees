@@ -17,6 +17,7 @@
                 </div>
                 <!-- Cluster Filter Pills -->
                 <div id="cluster-pills-container">
+                    <span id="cluster-pills-label">Select thematic clusters</span>
                     <div
                         *ngFor="let cluster of liteBriteChart?.clusters"
                         class="cluster-pill"
@@ -25,6 +26,8 @@
                         (click)="liteBriteChart?.toggleClusterFilter(cluster)">
                         {{ cluster + 1 }}
                     </div>
+                    <button class="cluster-action" aria-label="Select all thematic clusters" (click)="liteBriteChart?.selectAllClusters()">Select all</button>
+                    <button class="cluster-action" aria-label="Reset thematic cluster filters" (click)="liteBriteChart?.resetClusterFilters()">Reset</button>
                 </div>
             </div>
         </div>

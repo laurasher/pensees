@@ -643,7 +643,17 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   public isClusterActive(cluster: number): boolean {
     return this.clusterFilters.has(cluster);
   }
-  
+
+  public selectAllClusters() {
+    this.clusterFilters = new Set<number>(this.clusters);
+    this.applyClusterFilters();
+  }
+
+  public resetClusterFilters() {
+    this.clusterFilters.clear();
+    this.applyClusterFilters();
+  }
+
   public getClusterColor(cluster: number): string {
     return this.cluster_color_map[cluster];
   }
