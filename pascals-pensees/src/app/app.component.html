@@ -4,6 +4,17 @@
         <div id="title-row">
             <p id="main-page-title">{{ title }}</p>
             <div id="header-controls">
+                <!-- Search Bar -->
+                <div id="search-container">
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="Search pensées..."
+                        [(ngModel)]="liteBriteChart.searchTerm"
+                        (ngModelChange)="liteBriteChart.searchPensees()"
+                    />
+                    <mat-icon *ngIf="liteBriteChart?.searchTerm" id="clear-icon" (click)="liteBriteChart.clearSearch()">close</mat-icon>
+                </div>
                 <!-- Cluster Filter Pills -->
                 <div id="cluster-pills-container">
                     <div id="cluster-pills-header">
@@ -23,17 +34,6 @@
                             {{ cluster + 1 }}
                         </div>
                     </div>
-                </div>
-                <!-- Search Bar -->
-                <div id="search-container">
-                    <input
-                        type="text"
-                        id="search-input"
-                        placeholder="Search pensées..."
-                        [(ngModel)]="liteBriteChart.searchTerm"
-                        (ngModelChange)="liteBriteChart.searchPensees()"
-                    />
-                    <mat-icon *ngIf="liteBriteChart?.searchTerm" id="clear-icon" (click)="liteBriteChart.clearSearch()">close</mat-icon>
                 </div>
             </div>
         </div>
