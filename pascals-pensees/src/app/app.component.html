@@ -17,17 +17,23 @@
                 </div>
                 <!-- Cluster Filter Pills -->
                 <div id="cluster-pills-container">
-                    <span id="cluster-pills-label">Select thematic clusters</span>
-                    <div
-                        *ngFor="let cluster of liteBriteChart?.clusters"
-                        class="cluster-pill"
-                        [class.active]="liteBriteChart?.isClusterActive(cluster)"
-                        [style.background-color]="liteBriteChart?.isClusterActive(cluster) ? liteBriteChart?.getClusterColor(cluster) : '#e0e0e0'"
-                        (click)="liteBriteChart?.toggleClusterFilter(cluster)">
-                        {{ cluster + 1 }}
+                    <div id="cluster-pills-header">
+                        <span id="cluster-pills-label">Select thematic clusters</span>
+                        <div id="cluster-pills-actions">
+                            <button class="cluster-action" aria-label="Select all thematic clusters" (click)="liteBriteChart?.selectAllClusters()">Select all</button>
+                            <button class="cluster-action" aria-label="Unselect all thematic clusters" (click)="liteBriteChart?.resetClusterFilters()">Unselect all</button>
+                        </div>
                     </div>
-                    <button class="cluster-action" aria-label="Select all thematic clusters" (click)="liteBriteChart?.selectAllClusters()">Select all</button>
-                    <button class="cluster-action" aria-label="Reset thematic cluster filters" (click)="liteBriteChart?.resetClusterFilters()">Reset</button>
+                    <div id="cluster-pills-grid">
+                        <div
+                            *ngFor="let cluster of liteBriteChart?.clusters"
+                            class="cluster-pill"
+                            [class.active]="liteBriteChart?.isClusterActive(cluster)"
+                            [style.background-color]="liteBriteChart?.isClusterActive(cluster) ? liteBriteChart?.getClusterColor(cluster) : '#e0e0e0'"
+                            (click)="liteBriteChart?.toggleClusterFilter(cluster)">
+                            {{ cluster + 1 }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
