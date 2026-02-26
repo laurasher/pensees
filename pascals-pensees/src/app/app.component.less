@@ -227,6 +227,7 @@
     z-index: 1000;
     overflow-y: auto;
     overflow-x: hidden;
+    cursor: grab;
 
     // Hide scrollbar
     scrollbar-width: none;
@@ -239,6 +240,7 @@
     &.dragging {
         transition: none;
         user-select: none;
+        cursor: grabbing;
     }
 
     &.open {
@@ -246,38 +248,8 @@
     }
 }
 
-.drawer-drag-handle {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 16px;
-    height: 100%;
-    cursor: grab;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-
-    &:active {
-        cursor: grabbing;
-    }
-
-    &:hover .drag-handle-bar {
-        opacity: 1;
-    }
-}
-
-.drag-handle-bar {
-    width: 4px;
-    height: 40px;
-    background: #bbb;
-    border-radius: 2px;
-    opacity: 0.4;
-    transition: opacity 0.2s;
-}
-
 .pensees-drawer-content {
-    padding: 20px 16px 20px 24px;
+    padding: 20px 16px;
     display: flex;
     flex-direction: column;
     gap: 12px;

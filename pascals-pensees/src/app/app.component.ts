@@ -35,8 +35,6 @@ export class AppComponent implements OnDestroy {
   private readonly toggleButtonWidth: number = 36;
   public drawerLeft: number = 0;
   public isDragging: boolean = false;
-  private dragStartX: number = 0;
-  private dragStartLeft: number = 0;
 
   @ViewChild('liteBriteChart') private liteBriteChartRef!: LiteBriteChartComponent;
 
@@ -125,23 +123,30 @@ export class AppComponent implements OnDestroy {
 
   // ── Drag to reposition ───────────────────────────────────────────────────
 
+  private readonly DRAG_THRESHOLD = 5;
+  private pendingDrag: { startX: number; startLeft: number } | null = null;
+
   public onDragStart(event: MouseEvent): void {
-    this.isDragging = true;
-    this.dragStartX = event.clientX;
-    this.dragStartLeft = this.drawerLeft;
-    event.preventDefault();
+    this.pendingDrag = { startX: event.clientX, startLeft: this.drawerLeft };
   }
 
   @HostListener('window:mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
+    if (!this.pendingDrag) return;
+    if (!this.isDragging) {
+      if (Math.abs(event.clientX - this.pendingDrag.startX) > this.DRAG_THRESHOLD) {
+        this.isDragging = true;
+      }
+    }
     if (!this.isDragging) return;
-    const newLeft = this.dragStartLeft + (event.clientX - this.dragStartX);
+    const newLeft = this.pendingDrag.startLeft + (event.clientX - this.pendingDrag.startX);
     this.drawerLeft = Math.max(0, Math.min(newLeft, this.maxDrawerLeft));
   }
 
   @HostListener('window:mouseup')
   onMouseUp(): void {
     this.isDragging = false;
+    this.pendingDrag = null;
   }
 
   @HostListener('window:resize')
@@ -159,8 +164,7 @@ export class AppComponent implements OnDestroy {
   public getPenseeCardStyle(cluster: number): { [key: string]: string } {
     const color = this.clusterColorMap[cluster] || '#cccccc';
     return {
-      'background-color': 'white',
-      'border': `4px solid ${color}`,
+      'background': `linear-gradient(to right, ${color} 4%, white 4%, white 96%, ${color} 96%)`,
     };
   }
 }
