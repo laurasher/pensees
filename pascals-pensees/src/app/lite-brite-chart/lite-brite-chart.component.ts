@@ -359,6 +359,14 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .attr("fill-opacity", (d: any) =>    d*color_amplifier)
               .style("stroke-opacity", (d: any) => d*color_amplifier)
               .style("stroke-color", cluster_color_map[_d.cluster])
+
+            // Recolor scatter plot dots with the same color and opacity as their respective lite-brite entry
+            scatter.selectAll(".scatter-cluster circle")
+              .transition(d3.transition())
+              .attr("fill", cluster_color_map[_d.cluster])
+              .attr("stroke", cluster_color_map[_d.cluster])
+              .attr("fill-opacity", (d: any) => ((_d.sim_arr as any)[d.fragment_index] ?? 0) * color_amplifier)
+              .attr("stroke-opacity", (d: any) => ((_d.sim_arr as any)[d.fragment_index] ?? 0) * color_amplifier);
           }.bind(this))
 
   }
