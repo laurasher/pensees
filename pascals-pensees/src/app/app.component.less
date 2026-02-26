@@ -122,7 +122,7 @@
 #cluster-pills-grid {
     display: grid;
     grid-template-columns: repeat(5, auto);
-    gap: 0.5vw;
+    gap: 0vw;
 }
 
 #cluster-pills-label {
@@ -151,16 +151,17 @@
 
 .cluster-pill {
     padding: 0.4vw 0.8vw;
-    border-radius: 8px;
+    // border-radius: 8px;
     cursor: pointer;
     font-size: 0.75vw;
     font-weight: 800;
+    font-style: bold;
     color: white;
     transition: all 0.2s ease;
     user-select: none;
 
     &:hover {
-        transform: translateY(-2px);
+        transform: translateY(2px);
         box-shadow: rgba(50, 50, 105, 0.25) 0px 4px 8px 0px;
     }
 
