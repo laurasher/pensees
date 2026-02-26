@@ -291,18 +291,23 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .attr("fill-opacity", 1)
               .attr("stroke-opacity", 1);
           })
-          .on("mouseout", function (this: any, _event: any) {
-            d3Select.select(this)
-              // .style("stroke", function (d: any) {return cluster_color_map[d.cluster];})
+          .on("mouseout", (_event: any) => {
             tooltip
               .style('display', 'none').style('opacity', 0);
             
-            // Restore all scatter dots to full opacity
-            scatter.selectAll(".scatter-cluster circle")
-              .transition().duration(100)
-              // .attr("r", 1.6)
-              .attr("fill-opacity", 1)
-              .attr("stroke-opacity", 1);
+            // Restore scatter dot opacity: use similarity-based values if double-click mode is active
+            if (this.isDoubleClickActive && this.doubleClickedPensee) {
+              const getSimOpacity = (d: any) => ((this.doubleClickedPensee.sim_arr as any)[d.fragment_index] ?? 0) * color_amplifier;
+              scatter.selectAll(".scatter-cluster circle")
+                .transition().duration(100)
+                .attr("fill-opacity", getSimOpacity)
+                .attr("stroke-opacity", getSimOpacity);
+            } else {
+              scatter.selectAll(".scatter-cluster circle")
+                .transition().duration(100)
+                .attr("fill-opacity", 1)
+                .attr("stroke-opacity", 1);
+            }
             
             // Remove highlight from the corresponding dot in the scatter plot
             const fragmentIndex = _event.target.__data__['fragment_index'];
