@@ -46,3 +46,20 @@
         <!-- <app-pensees-display  class="column"></app-pensees-display> -->
     </div>
 </div>
+
+<!-- Pensées Drawer Toggle Button -->
+<button class="drawer-toggle" [class.open]="isDrawerOpen" [attr.aria-expanded]="isDrawerOpen" (click)="toggleDrawer()" aria-label="Toggle pensées drawer">
+    <mat-icon>{{ isDrawerOpen ? 'chevron_right' : 'menu_book' }}</mat-icon>
+</button>
+
+<!-- Pensées Drawer -->
+<div class="pensees-drawer" [class.open]="isDrawerOpen" role="complementary" aria-label="Pensées drawer">
+    <div class="pensees-drawer-content">
+        <div
+            *ngFor="let pensee of penseesList"
+            class="pensee-card"
+            [ngStyle]="getPenseeCardStyle(pensee.cluster)">
+            <p>{{ pensee.corpus }}</p>
+        </div>
+    </div>
+</div>
