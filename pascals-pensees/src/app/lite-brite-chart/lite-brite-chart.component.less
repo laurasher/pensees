@@ -2,6 +2,9 @@
 @header-offset: 200px;
 @side-panel-min-height: 200px;
 @side-panel-spacing: 80px;
+// Scatterplot edge fade distances
+@scatter-fade-start: 8%;
+@scatter-fade-end: 92%;
 
 #container {
   height: 100%;
@@ -131,7 +134,18 @@ svg {
   height: calc(40vh - @side-panel-spacing);
   min-height: @side-panel-min-height;
   width: 100%;
+  overflow: hidden;
   transition: all 0.3s ease;
+  
+  // Fade the edges so the container boundary is not visible when panning/zooming
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, black @scatter-fade-start, black @scatter-fade-end, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black @scatter-fade-start, black @scatter-fade-end, transparent 100%);
+  -webkit-mask-composite: destination-in;
+  mask-image:
+    linear-gradient(to right, transparent 0%, black @scatter-fade-start, black @scatter-fade-end, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black @scatter-fade-start, black @scatter-fade-end, transparent 100%);
+  mask-composite: intersect;
   
   svg {
     cursor: grab;
