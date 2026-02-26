@@ -267,11 +267,14 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
           .attr("fill-opacity", 0)
           .on("mouseover", function (this: any, _event: any, d:any) {
             d3Select.select(this)
+            const tooltipData = _event.target.__data__;
+            const words = (tooltipData['corpus'] || '').split(/\s+/);
+            const preview = words.length > 10 ? words.slice(0, 10).join(' ') + '...' : words.join(' ');
             tooltip
               .style('top', (_event.layerY + 15) + 'px').style('left', (_event.layerX) + 'px')
               .style('background', "#f6efe3")
               .style('display', 'block').style('opacity', 0.99)
-              .html(`cluster: ${_event.target.__data__['cluster']}<br>number: ${_event.target.__data__['fragment_number']}<br>index: ${_event.target.__data__['fragment_index']}<br>row: ${_event.target.__data__['row']}<br>col: ${_event.target.__data__['col']}`);
+              .html(`cluster: ${tooltipData['cluster']}<br>number: ${tooltipData['fragment_number']}<br>${preview}`);
             
             // Dim all scatter dots to 50% opacity
             scatter.selectAll(".scatter-cluster circle")
@@ -504,15 +507,15 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
       } else {
         // Normal mode, just dim everything
         allRects
-          .attr('fill-opacity', 0.3)
-          .attr('stroke-opacity', 0.3)
+          .attr('fill-opacity', 0.1)
+          .attr('stroke-opacity', 0.1)
           .attr('stroke', (d: any) => cluster_color_map[d.cluster])
           .attr('stroke-width', 1);
       }
       
       // Hide all scatterplot dots
       d3.selectAll('.scatter-cluster circle')
-        .attr('opacity', 0.3);
+        .attr('opacity', 0.1);
     } else {
       // Has matches - show matching rectangles with appropriate opacity
       if (this.isDoubleClickActive && this.doubleClickedPensee) {
@@ -561,8 +564,8 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
           
           // Update only changed rectangles
           d3.select(nodes[i])
-            .attr('fill-opacity', isMatch ? 1 : 0.3)
-            .attr('stroke-opacity', isMatch ? 1 : 0.3)
+            .attr('fill-opacity', isMatch ? 1 : 0.1)
+            .attr('stroke-opacity', isMatch ? 1 : 0.1)
             .attr('stroke', cluster_color_map[d.cluster])
             .attr('stroke-width', 1);
         });
