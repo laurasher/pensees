@@ -133,6 +133,14 @@ svg {
   width: 100%;
   transition: all 0.3s ease;
   
+  svg {
+    cursor: grab;
+    
+    &:active {
+      cursor: grabbing;
+    }
+  }
+  
   &.hidden {
     display: none;
   }

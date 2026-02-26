@@ -32,6 +32,8 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   private currentDisplayedPensee: any = null; // Track currently displayed pensée for dynamic highlighting
   private isDoubleClickActive: boolean = false; // Track if double-click similarity mode is active
   private doubleClickedPensee: any = null; // Store the pensée that was double-clicked
+  private selectedScatterDotIndex: number | null = null; // Track the currently selected scatter dot
+  private scatterZoom: any = null; // Store D3 zoom behaviour for the scatterplot
 
   public message = "Click colored boxes to see pensées text below. Double click to see n-most similar pensées to the one you clicked."
   // public message = ""
@@ -167,6 +169,20 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     this.g = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.scatter_svg_g = this.scatter_svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
+    // Add zoom and pan behaviour to the scatterplot
+    const zoom = d3.zoom()
+      .scaleExtent([0.5, 20])
+      .on('zoom', (event: any) => {
+        this.scatter_svg_g.attr('transform', event.transform);
+      });
+    this.scatterZoom = zoom;
+    this.scatter_svg.call(zoom);
+    // Override D3's default dblclick-to-zoom: reset to identity only when clicking SVG background
+    this.scatter_svg.on('dblclick.zoom', (event: any) => {
+      if (event.target === this.scatter_svg.node()) {
+        this.scatter_svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity);
+      }
+    });
   }
   private drawLites() {
     const cluster_color_map = this.cluster_color_map;
@@ -207,11 +223,12 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
           .append("circle")
             .attr("cx", (d: any) => x(d.x0))
             .attr("cy", (d: any) => y(d.x1))
-            .attr("r", 1.6)
+            .attr("r", 1.2)
             .style("cursor", "pointer")
             .on("click", (_event: any, _d: any) => {
               // Store the currently displayed pensée
               this.currentDisplayedPensee = _d;
+              this.selectedScatterDotIndex = _d.fragment_index;
               
               // Get the color for this pensée's cluster
               const penseeColor = cluster_color_map[_d.cluster];
@@ -238,7 +255,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               // Reset all dots to default radius
               scatter.selectAll(".scatter-cluster circle")
                 .transition().duration(100)
-                .attr("r", 1.6);
+                .attr("r", 1.2);
               
               // Highlight the selected pensée's dot with radius 8
               scatter.select(".scatter-dot-"+_d.fragment_index)
@@ -251,6 +268,19 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
       circles.transition(d3.transition(), 40000)
         .attr("fill", (d: any) => cluster_color_map[d.cluster])
         .attr("stroke", (d: any) => cluster_color_map[d.cluster]);
+
+      // Add hover effects: increase radius on mouseover, restore on mouseout
+      circles
+        .on("mouseover", (_event: any, _d: any) => {
+          if (_d.fragment_index !== this.selectedScatterDotIndex) {
+            d3.select(_event.currentTarget).transition().duration(100).attr("r", 3.5);
+          }
+        })
+        .on("mouseout", (_event: any, _d: any) => {
+          if (_d.fragment_index !== this.selectedScatterDotIndex) {
+            d3.select(_event.currentTarget).transition().duration(100).attr("r", 1.2);
+          }
+        });
     }
 
     let color_amplifier = 5;
@@ -309,11 +339,12 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             scatter.select(".scatter-dot-"+fragmentIndex)
               .select("circle")
               .transition().duration(100)
-              .attr("r", 1.6);
+              .attr("r", 1.2);
           })
           .on("click", (_event: any, _d: any) => {
             // Store the currently displayed pensée
             this.currentDisplayedPensee = _d;
+            this.selectedScatterDotIndex = _d.fragment_index;
             
             // Get the color for this pensée's cluster
             const penseeColor = cluster_color_map[_d.cluster];
@@ -339,7 +370,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             // Reset all dots to default radius
             scatter.selectAll(".scatter-cluster circle")
               .transition().duration(100)
-              .attr("r", 1.6);
+              .attr("r", 1.2);
             
             // Highlight the selected pensée's dot with radius 8
             scatter.select(".scatter-dot-"+_d.fragment_index)
@@ -620,6 +651,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     this.currentDisplayedPensee = null; // Clear currently displayed pensée
     this.isDoubleClickActive = false; // Clear double-click state
     this.doubleClickedPensee = null; // Clear double-clicked pensée
+    this.selectedScatterDotIndex = null; // Clear selected scatter dot
     
     // Reset cluster filters to show all clusters
     this.clusterFilters = new Set<number>(this.clusters);
