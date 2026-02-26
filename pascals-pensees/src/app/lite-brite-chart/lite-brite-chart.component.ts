@@ -37,7 +37,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   // public message = ""
   public isTextViewerExpanded: boolean = false;
   private square: number = 10;
-  private squareBuffer: number = 1.9;
+  private squareBuffer: number = 1.5;
 
   private NUM_CLUSTERS = 10;
   private margin = {top: 0, right: 0, bottom: 0, left: 0};
@@ -274,7 +274,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .style('top', (_event.layerY + 15) + 'px').style('left', (_event.layerX) + 'px')
               .style('background', "#f6efe3")
               .style('display', 'block').style('opacity', 0.99)
-              .html(`cluster: ${tooltipData['cluster']}<br>number: ${tooltipData['fragment_number']}<br>${preview}`);
+              .html(`cluster: ${tooltipData['cluster']}<br>${preview}`);
             
             // Dim all scatter dots to 50% opacity
             scatter.selectAll(".scatter-cluster circle")
