@@ -37,7 +37,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   // public message = ""
   public isTextViewerExpanded: boolean = false;
   private square: number = 10;
-  private squareBuffer: number = 0;
+  private squareBuffer: number = 1.9;
 
   private NUM_CLUSTERS = 10;
   private margin = {top: 0, right: 0, bottom: 0, left: 0};
@@ -180,10 +180,10 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
       .enter()
       .append("rect")
         .attr("class", "lites")
-        .attr('x', (d: any, i: any) => d.col*(this.adjustWidth+this.squareBuffer))
-        .attr('y', (d: any, i: any) => d.row*(this.adjustHeight+this.squareBuffer))
-        .attr('width',  this.adjustWidth)
-        .attr('height', this.adjustHeight)
+        .attr('x', (d: any, i: any) => d.col * this.adjustWidth)
+        .attr('y', (d: any, i: any) => d.row * this.adjustHeight)
+        .attr('width',  this.adjustWidth - this.squareBuffer)
+        .attr('height', this.adjustHeight - this.squareBuffer)
         .attr("fill", "white")
         .attr("stroke", "white")
         .transition(d3.transition(), 40000)
@@ -259,10 +259,10 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
         .enter()
         .append("rect")
           .attr("class", "lites-overlay")
-          .attr('x', (d: any, i: any) => d.col*(this.adjustWidth+this.squareBuffer))
-          .attr('y', (d: any, i: any) => d.row*(this.adjustHeight+this.squareBuffer))
-          .attr('width',  this.adjustWidth)
-          .attr('height', this.adjustHeight)
+          .attr('x', (d: any, i: any) => d.col * this.adjustWidth)
+          .attr('y', (d: any, i: any) => d.row * this.adjustHeight)
+          .attr('width',  this.adjustWidth - this.squareBuffer)
+          .attr('height', this.adjustHeight - this.squareBuffer)
           .attr("fill", "white")
           .attr("fill-opacity", 0)
           .on("mouseover", function (this: any, _event: any, d:any) {
