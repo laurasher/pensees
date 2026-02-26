@@ -39,7 +39,7 @@ export class AppComponent implements OnDestroy {
 
   @ViewChild('liteBriteChart') private liteBriteChartRef!: LiteBriteChartComponent;
 
-  private readonly clusterColorMap: {[key: number]: string} = {
+  public readonly clusterColorMap: {[key: number]: string} = {
     0: '#D3BCBC',
     1: '#DA6627',
     2: '#08332C',
@@ -51,6 +51,8 @@ export class AppComponent implements OnDestroy {
     8: '#937F7F',
     9: '#3F5450',
   };
+  public readonly clusters: number[] = Array.from({length: 10}, (_, i) => i);
+  public activeClusterFilters: Set<number> = new Set(Array.from({length: 10}, (_, i) => i));
 
   constructor(private http: HttpClient) {
     this.data = this.http.get<FragmentInterface>('assets/pensee_clusters.json');
@@ -121,6 +123,31 @@ export class AppComponent implements OnDestroy {
     this.filteredPenseesList = term
       ? this.penseesList.filter(p => p.corpus?.toLowerCase().includes(term))
       : this.penseesList;
+    this.closedStripeGradient = this.buildClosedStripeGradient();
+  }
+
+  // ── Cluster filter wrappers (keep chart + stripe in sync) ────────────────
+
+  public onClusterToggle(cluster: number): void {
+    if (this.activeClusterFilters.has(cluster)) {
+      this.activeClusterFilters.delete(cluster);
+    } else {
+      this.activeClusterFilters.add(cluster);
+    }
+    this.liteBriteChartRef?.toggleClusterFilter(cluster);
+    this.closedStripeGradient = this.buildClosedStripeGradient();
+  }
+
+  public onSelectAllClusters(): void {
+    this.activeClusterFilters = new Set(this.clusters);
+    this.liteBriteChartRef?.selectAllClusters();
+    this.closedStripeGradient = this.buildClosedStripeGradient();
+  }
+
+  public onDeselectAllClusters(): void {
+    this.activeClusterFilters.clear();
+    this.liteBriteChartRef?.resetClusterFilters();
+    this.closedStripeGradient = this.buildClosedStripeGradient();
   }
 
   // ── Drag to reposition ───────────────────────────────────────────────────
@@ -172,15 +199,22 @@ export class AppComponent implements OnDestroy {
 
   // ── Closed-drawer stripe gradient ────────────────────────────────────────
 
+  private readonly DEFAULT_STRIPE_COLOR = '#cccccc';
+
   private buildClosedStripeGradient(): string {
-    if (!this.penseesList.length) return 'white';
-    const totalChars = this.penseesList.reduce((sum, p) => sum + (p.corpus?.length ?? 0), 0);
-    if (totalChars === 0) return 'white';
+    const searchLower = this.searchTerm.toLowerCase().trim();
+    const source = this.penseesList.filter(p =>
+      this.activeClusterFilters.has(p.cluster) &&
+      (!searchLower || p.corpus?.toLowerCase().includes(searchLower))
+    );
+    if (!source.length) return this.DEFAULT_STRIPE_COLOR;
+    const totalChars = source.reduce((sum, p) => sum + (p.corpus?.length ?? 0), 0);
+    if (totalChars === 0) return this.DEFAULT_STRIPE_COLOR;
     const stops: string[] = [];
     let cumPct = 0;
-    for (const pensee of this.penseesList) {
+    for (const pensee of source) {
       const pct = ((pensee.corpus?.length ?? 0) / totalChars) * 100;
-      const color = this.clusterColorMap[pensee.cluster] ?? '#cccccc';
+      const color = this.clusterColorMap[pensee.cluster] ?? this.DEFAULT_STRIPE_COLOR;
       stops.push(`${color} ${cumPct}% ${cumPct + pct}%`);
       cumPct += pct;
     }

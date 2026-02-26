@@ -20,18 +20,18 @@
                     <div id="cluster-pills-header">
                         <span id="cluster-pills-label">Toggle thematic clusters</span>
                         <div id="cluster-pills-actions">
-                            <button class="cluster-action" aria-label="Select all thematic clusters" (click)="liteBriteChart?.selectAllClusters()">Select All</button>
-                            <button class="cluster-action" aria-label="Deselect all thematic clusters" (click)="liteBriteChart?.resetClusterFilters()">Deselect All</button>
+                            <button class="cluster-action" aria-label="Select all thematic clusters" (click)="onSelectAllClusters()">Select All</button>
+                            <button class="cluster-action" aria-label="Deselect all thematic clusters" (click)="onDeselectAllClusters()">Deselect All</button>
                         </div>
                     </div>
                     <div id="cluster-pills-grid">
                         <div
-                            *ngFor="let cluster of liteBriteChart?.clusters"
+                            *ngFor="let cluster of clusters"
                             class="cluster-pill"
-                            [class.active]="liteBriteChart?.isClusterActive(cluster)"
-                            [style.background-color]="liteBriteChart?.isClusterActive(cluster) ? liteBriteChart?.getClusterColor(cluster) : '#e0e0e0'"
-                            [style.--cluster-color]="liteBriteChart?.getClusterColor(cluster)"
-                            (click)="liteBriteChart?.toggleClusterFilter(cluster)">
+                            [class.active]="activeClusterFilters.has(cluster)"
+                            [style.background-color]="activeClusterFilters.has(cluster) ? clusterColorMap[cluster] : '#e0e0e0'"
+                            [style.--cluster-color]="clusterColorMap[cluster]"
+                            (click)="onClusterToggle(cluster)">
                             {{ cluster + 1 }}
                         </div>
                     </div>
