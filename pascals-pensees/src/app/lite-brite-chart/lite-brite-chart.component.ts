@@ -27,7 +27,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   public matchedIndices: Set<number> = new Set<number>();
   private previousMatchedIndices: Set<number> = new Set<number>();
   private searchDebounceTimer: any = null;
-  private searchCache: Array<{corpusLower: string, indexStr: string, numberStr: string}> = [];
+  private searchCache: Array<{corpusLower: string, numberStr: string}> = [];
   private resizeTimeout: any = null;
   private currentDisplayedPensee: any = null; // Track currently displayed pensée for dynamic highlighting
   private isDoubleClickActive: boolean = false; // Track if double-click similarity mode is active
@@ -121,7 +121,6 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     if (Array.isArray(this.data)) {
       this.searchCache = this.data.map(item => ({
         corpusLower: item.corpus?.toLowerCase() || '',
-        indexStr: item.fragment_index?.toString() || '',
         numberStr: item.fragment_number?.toString() || ''
       }));
     }
@@ -415,7 +414,6 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     // Use cached lowercase strings for much faster search
     this.searchCache.forEach((cached, index) => {
       if (cached.corpusLower.includes(searchLower) ||
-          cached.indexStr.includes(searchLower) ||
           cached.numberStr.includes(searchLower)) {
         this.matchedIndices.add(index);
       }
