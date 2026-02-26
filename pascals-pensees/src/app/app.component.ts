@@ -166,7 +166,7 @@ export class AppComponent implements OnDestroy {
   public getPenseeCardStyle(cluster: number): { [key: string]: string } {
     const color = this.clusterColorMap[cluster] || '#cccccc';
     return {
-      'background': `linear-gradient(to right, ${color} 4%, white 4%, white 96%, ${color} 96%)`,
+      'background': `linear-gradient(to right, ${color} 2%, white 2%, white 98%, ${color} 98%)`,
     };
   }
 
