@@ -37,7 +37,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   // public message = ""
   public isTextViewerExpanded: boolean = false;
   private square: number = 10;
-  private squareBuffer: number = 1.7;
+  private squareBuffer: number = 1.9;
 
   private NUM_CLUSTERS = 10;
   private margin = {top: 0, right: 0, bottom: 0, left: 0};
