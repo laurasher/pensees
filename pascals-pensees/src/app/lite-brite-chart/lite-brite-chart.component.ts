@@ -223,7 +223,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
           .append("circle")
             .attr("cx", (d: any) => x(d.x0))
             .attr("cy", (d: any) => y(d.x1))
-            .attr("r", 1.2)
+            .attr("r", 1.6)
             .style("cursor", "pointer")
             .on("click", (_event: any, _d: any) => {
               // Store the currently displayed pensée
@@ -255,7 +255,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               // Reset all dots to default radius
               scatter.selectAll(".scatter-cluster circle")
                 .transition().duration(100)
-                .attr("r", 1.2);
+                .attr("r", 1.6);
               
               // Highlight the selected pensée's dot with radius 8
               scatter.select(".scatter-dot-"+_d.fragment_index)
@@ -278,7 +278,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
         })
         .on("mouseout", (_event: any, _d: any) => {
           if (_d.fragment_index !== this.selectedScatterDotIndex) {
-            d3.select(_event.currentTarget).transition().duration(100).attr("r", 1.2);
+            d3.select(_event.currentTarget).transition().duration(100).attr("r", 1.6);
           }
         });
     }
@@ -339,7 +339,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             scatter.select(".scatter-dot-"+fragmentIndex)
               .select("circle")
               .transition().duration(100)
-              .attr("r", 1.2);
+              .attr("r", 1.6);
           })
           .on("click", (_event: any, _d: any) => {
             // Store the currently displayed pensée
@@ -370,7 +370,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             // Reset all dots to default radius
             scatter.selectAll(".scatter-cluster circle")
               .transition().duration(100)
-              .attr("r", 1.2);
+              .attr("r", 1.6);
             
             // Highlight the selected pensée's dot with radius 8
             scatter.select(".scatter-dot-"+_d.fragment_index)
