@@ -22,12 +22,8 @@ svg {
   height: calc(105vh - @header-offset - 2vh);
   width: 100%;
   margin-bottom: 2vh;
-  // outline: 2px dotted red;
 }
 #text-viewer {
-  // outline: 2px dotted red;
-  // height: 100%;
-  // height: 50%;
   height: auto;
   max-height: calc(52vh - @side-panel-spacing);
   min-height: @side-panel-min-height;
@@ -142,45 +138,6 @@ svg {
   }
 }
 
-#cluster-pills-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5vw;
-  margin-bottom: 1vh;
-  margin-top: 1vh;
-  align-items: center;
-}
-
-.cluster-pill {
-  padding: 0.4vw 0.8vw;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.75vw;
-  font-weight: 800;
-  color: white;
-  transition: all 0.2s ease;
-  // box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px;
-  user-select: none;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: rgba(50, 50, 105, 0.25) 0px 4px 8px 0px;
-  }
-  
-  &:active {
-    transform: translateY(0px);
-  }
-  
-  &:not(.active) {
-    background-color: #e0e0e0 !important;
-    color: #666;
-    opacity: 0.6;
-    
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-}
 .tooltip {
   position: absolute;
   background: white;
@@ -204,49 +161,6 @@ svg {
 
   &:hover {
     color: #4D7F71;
-  }
-}
-
-#search-container {
-  position: absolute;
-  top: 1vh;
-  left: 2vw;
-  display: flex;
-  align-items: center;
-  gap: 0.5vw;
-  z-index: 10;
-}
-
-#search-input {
-  padding: 0.5vw 1vw;
-  font-family: "Effra Rg" !important;
-  font-size: 0.8vw !important;
-  border: 1px solid #e0e0e0;
-  border-radius: 7px;
-  background: white;
-  outline: none;
-  width: 20vw;
-  box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 7px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
-  
-  &:focus {
-    border-color: #4D7F71;
-  }
-  
-  &::placeholder {
-    color: #999;
-    font-family: "Effra Lt" !important;
-  }
-}
-
-#clear-icon {
-  cursor: pointer;
-  // font-size: 1.2vw !important;
-  width: 1.2vw;
-  height: 1.2vw;
-  color: #666;
-  
-  &:hover {
-    color: #333;
   }
 }
 
