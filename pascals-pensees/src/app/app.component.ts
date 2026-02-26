@@ -32,9 +32,10 @@ export class AppComponent implements OnDestroy {
 
   // Drawer positioning & drag state
   readonly drawerWidth: number = 600;
-  private readonly toggleButtonWidth: number = 36;
+  readonly toggleButtonWidth: number = 36;
   public drawerLeft: number = 0;
   public isDragging: boolean = false;
+  public closedStripeGradient: string = 'white';
 
   @ViewChild('liteBriteChart') private liteBriteChartRef!: LiteBriteChartComponent;
 
@@ -56,6 +57,7 @@ export class AppComponent implements OnDestroy {
     this.dataSubscription = this.data.subscribe((pensees: any) => {
       this.penseesList = pensees as FragmentInterface[];
       this.updateFilteredPensees();
+      this.closedStripeGradient = this.buildClosedStripeGradient();
     });
     console.log("In AppComponent constructor");
     console.log(this.data);
@@ -164,7 +166,24 @@ export class AppComponent implements OnDestroy {
   public getPenseeCardStyle(cluster: number): { [key: string]: string } {
     const color = this.clusterColorMap[cluster] || '#cccccc';
     return {
-      'background': `linear-gradient(to right, ${color} 2%, white 2%, white 98%, ${color} 98%)`,
+      'background': `linear-gradient(to right, ${color} 4%, white 4%, white 96%, ${color} 96%)`,
     };
+  }
+
+  // ── Closed-drawer stripe gradient ────────────────────────────────────────
+
+  private buildClosedStripeGradient(): string {
+    if (!this.penseesList.length) return 'white';
+    const totalChars = this.penseesList.reduce((sum, p) => sum + (p.corpus?.length ?? 0), 0);
+    if (totalChars === 0) return 'white';
+    const stops: string[] = [];
+    let cumPct = 0;
+    for (const pensee of this.penseesList) {
+      const pct = ((pensee.corpus?.length ?? 0) / totalChars) * 100;
+      const color = this.clusterColorMap[pensee.cluster] ?? '#cccccc';
+      stops.push(`${color} ${cumPct}% ${cumPct + pct}%`);
+      cumPct += pct;
+    }
+    return `linear-gradient(to bottom, ${stops.join(', ')})`;
   }
 }

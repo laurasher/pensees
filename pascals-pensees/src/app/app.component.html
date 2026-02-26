@@ -47,15 +47,23 @@
     </div>
 </div>
 
-<!-- Pensées Drawer Toggle Button (sticks to the drawer's left edge) -->
-<button class="drawer-toggle"
-        [class.open]="isDrawerOpen"
+<!-- Closed-drawer colour stripe (replaces the toggle button when tucked in) -->
+<div *ngIf="!isDrawerOpen"
+     class="drawer-closed-stripe"
+     [style.background]="closedStripeGradient"
+     (click)="toggleDrawer()"
+     role="button"
+     aria-label="Open pensées drawer"></div>
+
+<!-- Pensées Drawer Toggle Button (open state only: chevron to close) -->
+<button *ngIf="isDrawerOpen"
+        class="drawer-toggle"
         [class.dragging]="isDragging"
-        [style.left.px]="toggleButtonLeft"
+        [style.left.px]="drawerLeft - toggleButtonWidth"
         [attr.aria-expanded]="isDrawerOpen"
         (click)="toggleDrawer()"
-        aria-label="Toggle pensées drawer">
-    <mat-icon>{{ isDrawerOpen ? 'chevron_right' : 'menu_book' }}</mat-icon>
+        aria-label="Close pensées drawer">
+    <mat-icon>chevron_right</mat-icon>
 </button>
 
 <!-- Pensées Drawer -->
