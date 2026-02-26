@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { FragmentInterface } from './fragment';
+import { LiteBriteChartComponent } from './lite-brite-chart/lite-brite-chart.component';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,19 @@ export class AppComponent implements OnDestroy {
   data: Observable<FragmentInterface>;
   public isDrawerOpen: boolean = false;
   public penseesList: FragmentInterface[] = [];
+  public filteredPenseesList: FragmentInterface[] = [];
+  public searchTerm: string = '';
   private dataSubscription: Subscription;
+
+  // Drawer positioning & drag state
+  readonly drawerWidth: number = 600;
+  private readonly toggleButtonWidth: number = 36;
+  public drawerLeft: number = 0;
+  public isDragging: boolean = false;
+  private dragStartX: number = 0;
+  private dragStartLeft: number = 0;
+
+  @ViewChild('liteBriteChart') private liteBriteChartRef!: LiteBriteChartComponent;
 
   private readonly clusterColorMap: {[key: number]: string} = {
     0: '#D3BCBC',
@@ -44,6 +57,7 @@ export class AppComponent implements OnDestroy {
     this.data = this.http.get<FragmentInterface>('assets/pensee_clusters.json');
     this.dataSubscription = this.data.subscribe((pensees: any) => {
       this.penseesList = pensees as FragmentInterface[];
+      this.updateFilteredPensees();
     });
     console.log("In AppComponent constructor");
     console.log(this.data);
@@ -56,15 +70,97 @@ export class AppComponent implements OnDestroy {
     this.dataSubscription.unsubscribe();
   }
 
-  public toggleDrawer(): void {
-    this.isDrawerOpen = !this.isDrawerOpen;
+  // Returns the `left` pixel position for the drawer (off-screen when closed)
+  get drawerPositionLeft(): number {
+    if (typeof window === 'undefined') return this.drawerWidth * 4;
+    return this.isDrawerOpen ? this.drawerLeft : window.innerWidth;
   }
 
+  // Toggle button always sits flush against the drawer's left edge
+  get toggleButtonLeft(): number {
+    if (typeof window === 'undefined') return this.drawerWidth * 4;
+    return this.isDrawerOpen
+      ? this.drawerLeft - this.toggleButtonWidth
+      : window.innerWidth - this.toggleButtonWidth;
+  }
+
+  // Maximum valid left position for the drawer (keeps it fully on screen)
+  private get maxDrawerLeft(): number {
+    return window.innerWidth - this.drawerWidth;
+  }
+
+  public toggleDrawer(): void {
+    if (!this.isDrawerOpen) {
+      this.drawerLeft = this.maxDrawerLeft;
+      this.isDrawerOpen = true;
+    } else {
+      this.isDrawerOpen = false;
+    }
+  }
+
+  // ── Search ──────────────────────────────────────────────────────────────────
+
+  public onSearchChange(): void {
+    if (this.liteBriteChartRef) {
+      this.liteBriteChartRef.searchTerm = this.searchTerm;
+      this.liteBriteChartRef.searchPensees();
+    }
+    this.updateFilteredPensees();
+  }
+
+  public clearSearch(): void {
+    this.searchTerm = '';
+    if (this.liteBriteChartRef) {
+      this.liteBriteChartRef.clearSearch();
+    }
+    this.updateFilteredPensees();
+  }
+
+  private updateFilteredPensees(): void {
+    const term = this.searchTerm.toLowerCase().trim();
+    this.filteredPenseesList = term
+      ? this.penseesList.filter(p => p.corpus?.toLowerCase().includes(term))
+      : this.penseesList;
+  }
+
+  // ── Drag to reposition ───────────────────────────────────────────────────
+
+  public onDragStart(event: MouseEvent): void {
+    this.isDragging = true;
+    this.dragStartX = event.clientX;
+    this.dragStartLeft = this.drawerLeft;
+    event.preventDefault();
+  }
+
+  @HostListener('window:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent): void {
+    if (!this.isDragging) return;
+    const newLeft = this.dragStartLeft + (event.clientX - this.dragStartX);
+    this.drawerLeft = Math.max(0, Math.min(newLeft, this.maxDrawerLeft));
+  }
+
+  @HostListener('window:mouseup')
+  onMouseUp(): void {
+    this.isDragging = false;
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    if (this.isDrawerOpen) {
+      const max = this.maxDrawerLeft;
+      if (this.drawerLeft > max) {
+        this.drawerLeft = Math.max(0, max);
+      }
+    }
+  }
+
+  // ── Card styling ──────────────────────────────────────────────────────────
+
   public getPenseeCardStyle(cluster: number): { [key: string]: string } {
-    const hex = this.clusterColorMap[cluster] || '#cccccc';
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return { 'background-color': `rgba(${r}, ${g}, ${b}, 0.6)` };
+    const color = this.clusterColorMap[cluster] || '#cccccc';
+    return {
+      'background-color': 'white',
+      'border': `4px solid ${color}`,
+    };
   }
 }

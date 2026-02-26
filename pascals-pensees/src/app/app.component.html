@@ -10,10 +10,10 @@
                         type="text"
                         id="search-input"
                         placeholder="Search pensées..."
-                        [(ngModel)]="liteBriteChart.searchTerm"
-                        (ngModelChange)="liteBriteChart.searchPensees()"
+                        [(ngModel)]="searchTerm"
+                        (ngModelChange)="onSearchChange()"
                     />
-                    <mat-icon *ngIf="liteBriteChart?.searchTerm" id="clear-icon" (click)="liteBriteChart.clearSearch()">close</mat-icon>
+                    <mat-icon *ngIf="searchTerm" id="clear-icon" (click)="clearSearch()">close</mat-icon>
                 </div>
                 <!-- Cluster Filter Pills -->
                 <div id="cluster-pills-container">
@@ -47,16 +47,33 @@
     </div>
 </div>
 
-<!-- Pensées Drawer Toggle Button -->
-<button class="drawer-toggle" [class.open]="isDrawerOpen" [attr.aria-expanded]="isDrawerOpen" (click)="toggleDrawer()" aria-label="Toggle pensées drawer">
+<!-- Pensées Drawer Toggle Button (sticks to the drawer's left edge) -->
+<button class="drawer-toggle"
+        [class.open]="isDrawerOpen"
+        [class.dragging]="isDragging"
+        [style.left.px]="toggleButtonLeft"
+        [attr.aria-expanded]="isDrawerOpen"
+        (click)="toggleDrawer()"
+        aria-label="Toggle pensées drawer">
     <mat-icon>{{ isDrawerOpen ? 'chevron_right' : 'menu_book' }}</mat-icon>
 </button>
 
 <!-- Pensées Drawer -->
-<div class="pensees-drawer" [class.open]="isDrawerOpen" role="complementary" aria-label="Pensées drawer">
+<div class="pensees-drawer"
+     [class.open]="isDrawerOpen"
+     [class.dragging]="isDragging"
+     [style.left.px]="drawerPositionLeft"
+     role="complementary"
+     aria-label="Pensées drawer">
+    <!-- Drag handle on the left edge -->
+    <div class="drawer-drag-handle"
+         (mousedown)="onDragStart($event)"
+         title="Drag to reposition">
+        <div class="drag-handle-bar"></div>
+    </div>
     <div class="pensees-drawer-content">
         <div
-            *ngFor="let pensee of penseesList"
+            *ngFor="let pensee of filteredPenseesList"
             class="pensee-card"
             [ngStyle]="getPenseeCardStyle(pensee.cluster)">
             <p>{{ pensee.corpus }}</p>
