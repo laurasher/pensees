@@ -33,7 +33,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   private isDoubleClickActive: boolean = false; // Track if double-click similarity mode is active
   private doubleClickedPensee: any = null; // Store the pensée that was double-clicked
 
-  public message = "Click colored boxes to see pensées text below. Double click to see n-most similar pensées to the one you clicked. \nClick within text area to reset."
+  public message = "Click colored boxes to see pensées text below. Double click to see n-most similar pensées to the one you clicked."
   // public message = ""
   public isTextViewerExpanded: boolean = false;
   private square: number = 10;
