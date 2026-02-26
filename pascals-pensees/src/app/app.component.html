@@ -30,6 +30,7 @@
                             class="cluster-pill"
                             [class.active]="liteBriteChart?.isClusterActive(cluster)"
                             [style.background-color]="liteBriteChart?.isClusterActive(cluster) ? liteBriteChart?.getClusterColor(cluster) : '#e0e0e0'"
+                            [style.--cluster-color]="liteBriteChart?.getClusterColor(cluster)"
                             (click)="liteBriteChart?.toggleClusterFilter(cluster)">
                             {{ cluster + 1 }}
                         </div>
