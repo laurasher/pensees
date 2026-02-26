@@ -1,16 +1,4 @@
 <div id="container">
-    <!-- Search Bar -->
-    <div id="search-container">
-        <input 
-            type="text" 
-            id="search-input" 
-            placeholder="Search pensées..." 
-            [(ngModel)]="searchTerm"
-            (input)="searchPensees()"
-        />
-        <mat-icon *ngIf="searchTerm" id="clear-icon" (click)="clearSearch()">close</mat-icon>
-    </div>
-    
     <!-- <mat-form-field class="pensees-search" appearance="fill">
       <mat-label>Search pensées text</mat-label>
       <input type="text" matInput [(ngModel)]="filterBy">
@@ -21,18 +9,6 @@
     <div id="subcontainer">
         <div #chart id="chart"></div>
         <div>
-          <!-- Cluster Filter Pills -->
-          <div id="cluster-pills-container">
-            <div 
-              *ngFor="let cluster of clusters" 
-              class="cluster-pill" 
-              [class.active]="isClusterActive(cluster)"
-              [style.background-color]="isClusterActive(cluster) ? getClusterColor(cluster) : '#e0e0e0'"
-              (click)="toggleClusterFilter(cluster)">
-              {{ cluster + 1 }}
-            </div>
-          </div>
-          
           <div #clusterScatterplot id="cluster-scatterplot" [class.hidden]="isTextViewerExpanded"></div>
           <div id="text-viewer" [class.expanded]="isTextViewerExpanded">
             <div class="text-viewer-header">

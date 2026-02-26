@@ -1,12 +1,47 @@
 <link rel="stylesheet" href="https://use.typekit.net/pjc2sqf.css">
 <div class="main-page-content">
-    <div id=titles-top-half>
-        <p id="main-page-title">{{ title }}</p>
+    <div id="titles-top-half">
+        <div id="title-row">
+            <p id="main-page-title">{{ title }}</p>
+            <div id="header-controls">
+                <!-- Search Bar -->
+                <div id="search-container">
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="Search pensées..."
+                        [(ngModel)]="liteBriteChart.searchTerm"
+                        (ngModelChange)="liteBriteChart.searchPensees()"
+                    />
+                    <mat-icon *ngIf="liteBriteChart?.searchTerm" id="clear-icon" (click)="liteBriteChart.clearSearch()">close</mat-icon>
+                </div>
+                <!-- Cluster Filter Pills -->
+                <div id="cluster-pills-container">
+                    <div id="cluster-pills-header">
+                        <span id="cluster-pills-label">Toggle thematic clusters</span>
+                        <div id="cluster-pills-actions">
+                            <button class="cluster-action" aria-label="Select all thematic clusters" (click)="liteBriteChart?.selectAllClusters()">Select all</button>
+                            <button class="cluster-action" aria-label="Unselect all thematic clusters" (click)="liteBriteChart?.resetClusterFilters()">Unselect all</button>
+                        </div>
+                    </div>
+                    <div id="cluster-pills-grid">
+                        <div
+                            *ngFor="let cluster of liteBriteChart?.clusters"
+                            class="cluster-pill"
+                            [class.active]="liteBriteChart?.isClusterActive(cluster)"
+                            [style.background-color]="liteBriteChart?.isClusterActive(cluster) ? liteBriteChart?.getClusterColor(cluster) : '#e0e0e0'"
+                            (click)="liteBriteChart?.toggleClusterFilter(cluster)">
+                            {{ cluster + 1 }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- <p id="main-page-subtitle">{{ subtitle }}</p> -->
         <p id="main-page-instructions">{{ instructions }}</p>
     </div>
-    <div id=charts-bottom-half>
-        <app-lite-brite-chart [data]="data | async" class="column"></app-lite-brite-chart>
+    <div id="charts-bottom-half">
+        <app-lite-brite-chart #liteBriteChart [data]="data | async" class="column"></app-lite-brite-chart>
         <!-- <app-pensees-display  class="column"></app-pensees-display> -->
     </div>
 </div>
