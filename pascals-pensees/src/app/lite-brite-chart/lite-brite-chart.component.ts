@@ -154,6 +154,16 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
     this.adjustWidth = this.contentWidth/44;
     this.adjustHeight = this.contentHeight/21.5;
 
+    // Define inner shadow filter for selected pensée tiles
+    const defs = this.svg.append('defs');
+    const filter = defs.append('filter').attr('id', 'inner-shadow');
+    filter.append('feOffset').attr('dx', 0).attr('dy', 2);
+    filter.append('feGaussianBlur').attr('stdDeviation', 2).attr('result', 'offset-blur');
+    filter.append('feComposite').attr('operator', 'out').attr('in', 'SourceGraphic').attr('in2', 'offset-blur').attr('result', 'inverse');
+    filter.append('feFlood').attr('flood-color', '#000').attr('flood-opacity', 0.4).attr('result', 'color');
+    filter.append('feComposite').attr('operator', 'in').attr('in', 'color').attr('in2', 'inverse').attr('result', 'shadow');
+    filter.append('feComposite').attr('in', 'shadow').attr('in2', 'SourceGraphic');
+
     this.g = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.scatter_svg_g = this.scatter_svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
@@ -221,6 +231,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               //   .transition(d3.transition())
               //   .attr("fill-opacity", 1)
               //   .attr("stroke-opacity", 1)
+              
+              // Apply inner shadow to the selected lite tile, remove from others
+              this.applyInnerShadowToSelectedTile(_d.fragment_index);
               
               // Reset all dots to default radius
               scatter.selectAll(".scatter-cluster circle")
@@ -317,6 +330,9 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
             //   .attr("fill-opacity", 1)
             //   .attr("stroke-opacity", 1)
             
+            // Apply inner shadow to the selected lite tile, remove from others
+            this.applyInnerShadowToSelectedTile(_d.fragment_index);
+            
             // Reset all dots to default radius
             scatter.selectAll(".scatter-cluster circle")
               .transition().duration(100)
@@ -344,6 +360,12 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
 
   }
   
+  private applyInnerShadowToSelectedTile(fragmentIndex: number) {
+    d3.selectAll('.lites').attr('filter', null);
+    d3.selectAll('.lites').filter((d: any) => d.fragment_index === fragmentIndex)
+      .attr('filter', 'url(#inner-shadow)');
+  }
+
   private highlightSearchTerms(text: string, color: string): string {
     if (!this.searchTerm || this.searchTerm.trim() === '') {
       return text;
