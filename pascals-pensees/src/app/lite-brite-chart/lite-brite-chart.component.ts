@@ -37,7 +37,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
   // public message = ""
   public isTextViewerExpanded: boolean = false;
   private square: number = 10;
-  private squareBuffer: number = 1.9;
+  private squareBuffer: number = 1.5;
 
   private NUM_CLUSTERS = 10;
   private margin = {top: 0, right: 0, bottom: 0, left: 0};
@@ -185,10 +185,10 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
         .attr('width',  this.adjustWidth - this.squareBuffer)
         .attr('height', this.adjustHeight - this.squareBuffer)
         .attr("fill", "white")
-        .attr("stroke", "white")
+        .attr("stroke", "none")
         .transition(d3.transition(), 40000)
         .attr("fill", (d: any) => cluster_color_map[d.cluster])
-        .attr("stroke", (d: any) => cluster_color_map[d.cluster])
+        .attr("stroke", "none")
 
     let x = d3.scaleLinear()
       .domain([-0.45, 0.45])
@@ -274,7 +274,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .style('top', (_event.layerY + 15) + 'px').style('left', (_event.layerX) + 'px')
               .style('background', "#f6efe3")
               .style('display', 'block').style('opacity', 0.99)
-              .html(`cluster: ${tooltipData['cluster']}<br>number: ${tooltipData['fragment_number']}<br>${preview}`);
+              .html(`cluster: ${tooltipData['cluster']}<br>${preview}`);
             
             // Dim all scatter dots to 50% opacity
             scatter.selectAll(".scatter-cluster circle")
@@ -357,8 +357,6 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               .transition(d3.transition())
               .attr("fill", cluster_color_map[_d.cluster])
               .attr("fill-opacity", (d: any) =>    d*color_amplifier)
-              .style("stroke-opacity", (d: any) => d*color_amplifier)
-              .style("stroke-color", cluster_color_map[_d.cluster])
           }.bind(this))
 
   }
@@ -462,16 +460,12 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
         .data(this.doubleClickedPensee.sim_arr)
         .attr('fill', cluster_color_map[this.doubleClickedPensee.cluster])
         .attr('fill-opacity', (d: any) => d * color_amplifier)
-        .attr('stroke-opacity', (d: any) => d * color_amplifier)
-        .attr('stroke', cluster_color_map[this.doubleClickedPensee.cluster])
-        .attr('stroke-width', 1);
+        .attr('stroke', 'none');
     } else {
       // No double-click active, reset to normal appearance
       allRects
         .attr('fill-opacity', 1)
-        .attr('stroke-opacity', 1)
-        .attr('stroke', (d: any) => cluster_color_map[d.cluster])
-        .attr('stroke-width', 1);
+        .attr('stroke', 'none');
     }
     
     // Show all scatterplot dots
@@ -501,16 +495,12 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
           .data(this.doubleClickedPensee.sim_arr)
           .attr('fill', cluster_color_map[this.doubleClickedPensee.cluster])
           .attr('fill-opacity', 0)
-          .attr('stroke-opacity', 0)
-          .attr('stroke', cluster_color_map[this.doubleClickedPensee.cluster])
-          .attr('stroke-width', 1);
+          .attr('stroke', 'none');
       } else {
         // Normal mode, just dim everything
         allRects
           .attr('fill-opacity', 0.1)
-          .attr('stroke-opacity', 0.1)
-          .attr('stroke', (d: any) => cluster_color_map[d.cluster])
-          .attr('stroke-width', 1);
+          .attr('stroke', 'none');
       }
       
       // Hide all scatterplot dots
@@ -538,17 +528,13 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
               rect
                 .attr('fill', cluster_color_map[this.doubleClickedPensee.cluster])
                 .attr('fill-opacity', d * color_amplifier)
-                .attr('stroke-opacity', d * color_amplifier)
-                .attr('stroke', cluster_color_map[this.doubleClickedPensee.cluster])
-                .attr('stroke-width', 1);
+                .attr('stroke', 'none');
             } else {
               // For non-matches in double-click mode, completely hide them
               rect
                 .attr('fill', cluster_color_map[this.doubleClickedPensee.cluster])
                 .attr('fill-opacity', 0)
-                .attr('stroke-opacity', 0)
-                .attr('stroke', cluster_color_map[this.doubleClickedPensee.cluster])
-                .attr('stroke-width', 1);
+                .attr('stroke', 'none');
             }
           });
       } else {
@@ -565,9 +551,7 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
           // Update only changed rectangles
           d3.select(nodes[i])
             .attr('fill-opacity', isMatch ? 1 : 0.1)
-            .attr('stroke-opacity', isMatch ? 1 : 0.1)
-            .attr('stroke', cluster_color_map[d.cluster])
-            .attr('stroke-width', 1);
+            .attr('stroke', 'none');
         });
       }
       
