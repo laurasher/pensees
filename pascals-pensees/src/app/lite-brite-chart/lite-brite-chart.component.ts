@@ -485,15 +485,15 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
       } else {
         // Normal mode, just dim everything
         allRects
-          .attr('fill-opacity', 0.3)
-          .attr('stroke-opacity', 0.3)
+          .attr('fill-opacity', 0.1)
+          .attr('stroke-opacity', 0.1)
           .attr('stroke', (d: any) => cluster_color_map[d.cluster])
           .attr('stroke-width', 1);
       }
       
       // Hide all scatterplot dots
       d3.selectAll('.scatter-cluster circle')
-        .attr('opacity', 0.3);
+        .attr('opacity', 0.1);
     } else {
       // Has matches - show matching rectangles with appropriate opacity
       if (this.isDoubleClickActive && this.doubleClickedPensee) {
@@ -542,8 +542,8 @@ export class LiteBriteChartComponent implements OnInit, OnDestroy {
           
           // Update only changed rectangles
           d3.select(nodes[i])
-            .attr('fill-opacity', isMatch ? 1 : 0.3)
-            .attr('stroke-opacity', isMatch ? 1 : 0.3)
+            .attr('fill-opacity', isMatch ? 1 : 0.1)
+            .attr('stroke-opacity', isMatch ? 1 : 0.1)
             .attr('stroke', cluster_color_map[d.cluster])
             .attr('stroke-width', 1);
         });
