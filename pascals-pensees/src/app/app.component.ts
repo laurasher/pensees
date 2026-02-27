@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { FragmentInterface } from './fragment';
+import { LiteBriteChartComponent } from './lite-brite-chart/lite-brite-chart.component';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,7 @@ import { FragmentInterface } from './fragment';
   styleUrls: ['./app.component.less']
 })
 
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   title = "Pascal's Pensées";
   instructions = "Explore clustering of Blaise Pascal's 924 pensées.";
   // instructions = "Explore NLP clustering and topic modeling of Pascal's 924 pensées. Each colored box represents one of Pascal's penseés, arranged chronologically. \
@@ -23,13 +24,200 @@ export class AppComponent {
   // of miracles throughout the work, but most especially at the end."
 
   data: Observable<FragmentInterface>;
+  public isDrawerOpen: boolean = false;
+  public penseesList: FragmentInterface[] = [];
+  public filteredPenseesList: FragmentInterface[] = [];
+  public searchTerm: string = '';
+  private dataSubscription: Subscription;
+
+  // Drawer positioning & drag state
+  readonly drawerWidth: number = 600;
+  readonly toggleButtonWidth: number = 36;
+  public drawerLeft: number = 0;
+  public isDragging: boolean = false;
+  public closedStripeGradient: string = 'white';
+
+  @ViewChild('liteBriteChart') private liteBriteChartRef!: LiteBriteChartComponent;
+
+  public readonly clusterColorMap: {[key: number]: string} = {
+    0: '#D3BCBC',
+    1: '#DA6627',
+    2: '#08332C',
+    3: '#4D7F71',
+    4: '#3A4D22',
+    5: '#B39530',
+    6: '#EADB9F',
+    7: '#604F5B',
+    8: '#937F7F',
+    9: '#3F5450',
+  };
+  public readonly clusters: number[] = Array.from({length: 10}, (_, i) => i);
+  public activeClusterFilters: Set<number> = new Set(Array.from({length: 10}, (_, i) => i));
 
   constructor(private http: HttpClient) {
     this.data = this.http.get<FragmentInterface>('assets/pensee_clusters.json');
+    this.dataSubscription = this.data.subscribe((pensees: any) => {
+      this.penseesList = pensees as FragmentInterface[];
+      this.updateFilteredPensees();
+      this.closedStripeGradient = this.buildClosedStripeGradient();
+    });
     console.log("In AppComponent constructor");
     console.log(this.data);
   }
 
   ngOnInit(){
+  }
+
+  ngOnDestroy(): void {
+    this.dataSubscription.unsubscribe();
+  }
+
+  // Returns the `left` pixel position for the drawer (off-screen when closed)
+  get drawerPositionLeft(): number {
+    if (typeof window === 'undefined') return this.drawerWidth * 4;
+    return this.isDrawerOpen ? this.drawerLeft : window.innerWidth;
+  }
+
+  // Toggle button always sits flush against the drawer's left edge
+  get toggleButtonLeft(): number {
+    if (typeof window === 'undefined') return this.drawerWidth * 4;
+    return this.isDrawerOpen
+      ? this.drawerLeft - this.toggleButtonWidth
+      : window.innerWidth - this.toggleButtonWidth;
+  }
+
+  // Maximum valid left position for the drawer (keeps it fully on screen)
+  private get maxDrawerLeft(): number {
+    return window.innerWidth - this.drawerWidth;
+  }
+
+  public toggleDrawer(): void {
+    if (!this.isDrawerOpen) {
+      this.drawerLeft = this.maxDrawerLeft;
+      this.isDrawerOpen = true;
+    } else {
+      this.isDrawerOpen = false;
+    }
+  }
+
+  // ── Search ──────────────────────────────────────────────────────────────────
+
+  public onSearchChange(): void {
+    if (this.liteBriteChartRef) {
+      this.liteBriteChartRef.searchTerm = this.searchTerm;
+      this.liteBriteChartRef.searchPensees();
+    }
+    this.updateFilteredPensees();
+  }
+
+  public clearSearch(): void {
+    this.searchTerm = '';
+    if (this.liteBriteChartRef) {
+      this.liteBriteChartRef.clearSearch();
+    }
+    this.updateFilteredPensees();
+  }
+
+  private updateFilteredPensees(): void {
+    const term = this.searchTerm.toLowerCase().trim();
+    this.filteredPenseesList = term
+      ? this.penseesList.filter(p => p.corpus?.toLowerCase().includes(term))
+      : this.penseesList;
+    this.closedStripeGradient = this.buildClosedStripeGradient();
+  }
+
+  // ── Cluster filter wrappers (keep chart + stripe in sync) ────────────────
+
+  public onClusterToggle(cluster: number): void {
+    if (this.activeClusterFilters.has(cluster)) {
+      this.activeClusterFilters.delete(cluster);
+    } else {
+      this.activeClusterFilters.add(cluster);
+    }
+    this.liteBriteChartRef?.toggleClusterFilter(cluster);
+    this.closedStripeGradient = this.buildClosedStripeGradient();
+  }
+
+  public onSelectAllClusters(): void {
+    this.activeClusterFilters = new Set(this.clusters);
+    this.liteBriteChartRef?.selectAllClusters();
+    this.closedStripeGradient = this.buildClosedStripeGradient();
+  }
+
+  public onDeselectAllClusters(): void {
+    this.activeClusterFilters.clear();
+    this.liteBriteChartRef?.resetClusterFilters();
+    this.closedStripeGradient = this.buildClosedStripeGradient();
+  }
+
+  // ── Drag to reposition ───────────────────────────────────────────────────
+
+  private readonly DRAG_THRESHOLD = 5;
+  private pendingDrag: { startX: number; startLeft: number } | null = null;
+
+  public onDragStart(event: MouseEvent): void {
+    this.pendingDrag = { startX: event.clientX, startLeft: this.drawerLeft };
+  }
+
+  @HostListener('window:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent): void {
+    if (!this.pendingDrag) return;
+    if (!this.isDragging) {
+      if (Math.abs(event.clientX - this.pendingDrag.startX) > this.DRAG_THRESHOLD) {
+        this.isDragging = true;
+      }
+    }
+    if (!this.isDragging) return;
+    const newLeft = this.pendingDrag.startLeft + (event.clientX - this.pendingDrag.startX);
+    this.drawerLeft = Math.max(0, Math.min(newLeft, this.maxDrawerLeft));
+  }
+
+  @HostListener('window:mouseup')
+  onMouseUp(): void {
+    this.isDragging = false;
+    this.pendingDrag = null;
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    if (this.isDrawerOpen) {
+      const max = this.maxDrawerLeft;
+      if (this.drawerLeft > max) {
+        this.drawerLeft = Math.max(0, max);
+      }
+    }
+  }
+
+  // ── Card styling ──────────────────────────────────────────────────────────
+
+  public getPenseeCardStyle(cluster: number): { [key: string]: string } {
+    const color = this.clusterColorMap[cluster] || '#cccccc';
+    return {
+      'background': `linear-gradient(to right, ${color} 2%, white 2%, white 98%, ${color} 98%)`,
+    };
+  }
+
+  // ── Closed-drawer stripe gradient ────────────────────────────────────────
+
+  private readonly DEFAULT_STRIPE_COLOR = '#cccccc';
+
+  private buildClosedStripeGradient(): string {
+    const searchLower = this.searchTerm.toLowerCase().trim();
+    const source = this.penseesList.filter(p =>
+      this.activeClusterFilters.has(p.cluster) &&
+      (!searchLower || p.corpus?.toLowerCase().includes(searchLower))
+    );
+    if (!source.length) return this.DEFAULT_STRIPE_COLOR;
+    const totalChars = source.reduce((sum, p) => sum + (p.corpus?.length ?? 0), 0);
+    if (totalChars === 0) return this.DEFAULT_STRIPE_COLOR;
+    const stops: string[] = [];
+    let cumPct = 0;
+    for (const pensee of source) {
+      const pct = ((pensee.corpus?.length ?? 0) / totalChars) * 100;
+      const color = this.clusterColorMap[pensee.cluster] ?? this.DEFAULT_STRIPE_COLOR;
+      stops.push(`${color} ${cumPct}% ${cumPct + pct}%`);
+      cumPct += pct;
+    }
+    return `linear-gradient(to bottom, ${stops.join(', ')})`;
   }
 }
