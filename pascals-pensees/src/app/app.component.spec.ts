@@ -38,9 +38,11 @@ describe('AppComponent', () => {
   it('should apply search and cluster filters together in drawer list', () => {
     const app = createComponent();
 
+    app.onDeselectAllClusters();
+    app.onClusterToggle(0);
+    app.onClusterToggle(1);
     app.searchTerm = 'and';
     app.onSearchChange();
-    app.onClusterToggle(2);
 
     const clusters = app.filteredPenseesList.map(p => p.cluster);
     expect(clusters).toEqual([0, 1]);
