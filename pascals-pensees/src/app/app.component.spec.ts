@@ -1,35 +1,54 @@
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
 import { AppComponent } from './app.component';
+import { FragmentInterface } from './fragment';
+import { HttpClient } from '@angular/common/http';
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
-  });
+  const pensees: FragmentInterface[] = [
+    { cluster: 0, corpus: 'grace and faith', fragment_index: 0, fragment_number: 1, sim_arr: {}, col: 0, row: 0 },
+    { cluster: 1, corpus: 'reason and logic', fragment_index: 1, fragment_number: 2, sim_arr: {}, col: 1, row: 0 },
+    { cluster: 2, corpus: 'heart and will', fragment_index: 2, fragment_number: 3, sim_arr: {}, col: 2, row: 0 }
+  ];
+
+  function createComponent(): AppComponent {
+    const http = jasmine.createSpyObj<Pick<HttpClient, 'get'>>('HttpClient', ['get']);
+    http.get.and.returnValue(of(pensees));
+    return new AppComponent(http as unknown as HttpClient);
+  }
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
+    const app = createComponent();
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'pascals-pensees'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('pascals-pensees');
+  it(`should have the expected title`, () => {
+    const app = createComponent();
+    expect(app.title).toEqual("Pascal's Pensées");
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('pascals-pensees app is running!');
+  it('should filter drawer list by selected clusters', () => {
+    const app = createComponent();
+
+    expect(app.filteredPenseesList.length).toBe(3);
+    app.onDeselectAllClusters();
+    app.onClusterToggle(1);
+
+    expect(app.filteredPenseesList.length).toBe(1);
+    expect(app.filteredPenseesList[0].cluster).toBe(1);
+    expect(app.filteredPenseesList[0].corpus).toContain('reason');
+  });
+
+  it('should apply search and cluster filters together in drawer list', () => {
+    const app = createComponent();
+
+    app.onDeselectAllClusters();
+    app.onClusterToggle(0);
+    app.onClusterToggle(1);
+    app.searchTerm = 'and';
+    app.onSearchChange();
+
+    const clusters = app.filteredPenseesList.map(p => p.cluster);
+    expect(clusters).toEqual([0, 1]);
+    expect(clusters).not.toContain(2);
   });
 });

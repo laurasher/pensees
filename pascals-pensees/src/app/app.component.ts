@@ -120,9 +120,10 @@ export class AppComponent implements OnDestroy {
 
   private updateFilteredPensees(): void {
     const term = this.searchTerm.toLowerCase().trim();
-    this.filteredPenseesList = term
-      ? this.penseesList.filter(p => p.corpus?.toLowerCase().includes(term))
-      : this.penseesList;
+    this.filteredPenseesList = this.penseesList.filter(p =>
+      this.activeClusterFilters.has(p.cluster) &&
+      (!term || p.corpus?.toLowerCase().includes(term))
+    );
     this.closedStripeGradient = this.buildClosedStripeGradient();
   }
 
@@ -135,19 +136,19 @@ export class AppComponent implements OnDestroy {
       this.activeClusterFilters.add(cluster);
     }
     this.liteBriteChartRef?.toggleClusterFilter(cluster);
-    this.closedStripeGradient = this.buildClosedStripeGradient();
+    this.updateFilteredPensees();
   }
 
   public onSelectAllClusters(): void {
     this.activeClusterFilters = new Set(this.clusters);
     this.liteBriteChartRef?.selectAllClusters();
-    this.closedStripeGradient = this.buildClosedStripeGradient();
+    this.updateFilteredPensees();
   }
 
   public onDeselectAllClusters(): void {
     this.activeClusterFilters.clear();
     this.liteBriteChartRef?.resetClusterFilters();
-    this.closedStripeGradient = this.buildClosedStripeGradient();
+    this.updateFilteredPensees();
   }
 
   // ── Drag to reposition ───────────────────────────────────────────────────
