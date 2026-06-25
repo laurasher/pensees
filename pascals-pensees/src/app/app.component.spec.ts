@@ -1,6 +1,7 @@
 import { of } from 'rxjs';
 import { AppComponent } from './app.component';
 import { FragmentInterface } from './fragment';
+import { HttpClient } from '@angular/common/http';
 
 describe('AppComponent', () => {
   const pensees: FragmentInterface[] = [
@@ -10,8 +11,9 @@ describe('AppComponent', () => {
   ];
 
   function createComponent(): AppComponent {
-    const http = { get: () => of(pensees) } as any;
-    return new AppComponent(http);
+    const http = jasmine.createSpyObj<Pick<HttpClient, 'get'>>('HttpClient', ['get']);
+    http.get.and.returnValue(of(pensees));
+    return new AppComponent(http as unknown as HttpClient);
   }
 
   it('should create the app', () => {
@@ -27,6 +29,7 @@ describe('AppComponent', () => {
   it('should filter drawer list by selected clusters', () => {
     const app = createComponent();
 
+    expect(app.filteredPenseesList.length).toBe(3);
     app.onDeselectAllClusters();
     app.onClusterToggle(1);
 
