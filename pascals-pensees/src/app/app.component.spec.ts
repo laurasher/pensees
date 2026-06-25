@@ -44,5 +44,6 @@ describe('AppComponent', () => {
 
     const clusters = app.filteredPenseesList.map(p => p.cluster);
     expect(clusters).toEqual([0, 1]);
+    expect(clusters).not.toContain(2);
   });
 });
