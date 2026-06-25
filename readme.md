@@ -1,3 +1,5 @@
+https://laurasher.github.io/pensees/
+
 Working from this deployment tutorial: https://medium.com/tech-insights/how-to-deploy-angular-apps-to-github-pages-gh-pages-896c4e10f9b4
 
 `npm i angular-cli-ghpages --save-dev (one time install)`
