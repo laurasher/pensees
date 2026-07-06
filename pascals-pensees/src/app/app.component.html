@@ -1,4 +1,42 @@
 <link rel="stylesheet" href="https://use.typekit.net/pjc2sqf.css">
+<button
+    class="instructions-tab"
+    type="button"
+    [attr.aria-expanded]="isInstructionsDrawerOpen"
+    (click)="toggleInstructionsDrawer()"
+    aria-label="Toggle instructions overlay">
+    <span class="instructions-tab-icon" aria-hidden="true">?</span>
+</button>
+
+<div
+    *ngIf="isInstructionsDrawerOpen"
+    class="instructions-backdrop"
+    (click)="closeInstructionsDrawer()"
+    aria-hidden="true"></div>
+
+<aside
+    class="instructions-drawer"
+    [class.open]="isInstructionsDrawerOpen"
+    [style.width.px]="instructionsDrawerWidth"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Instructions overlay">
+    <div class="instructions-drawer-content">
+        <div class="instructions-drawer-header">
+            <h2>Instructions</h2>
+            <button
+                type="button"
+                class="instructions-close"
+                (click)="closeInstructionsDrawer()"
+                aria-label="Close instructions overlay">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <p>{{ instructions }}</p>
+        <p *ngFor="let detail of instructionsDetails">{{ detail }}</p>
+    </div>
+</aside>
+
 <div class="main-page-content">
     <div id="titles-top-half">
         <div id="title-row">
