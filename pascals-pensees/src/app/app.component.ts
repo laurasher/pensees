@@ -28,9 +28,6 @@ export class AppComponent implements OnDestroy {
   public penseesList: FragmentInterface[] = [];
   public filteredPenseesList: FragmentInterface[] = [];
   public searchTerm: string = '';
-  public readonly MIN_STRIPE_ZOOM: number = 0.5;
-  public readonly MAX_STRIPE_ZOOM: number = 3;
-  public stripeZoom: number = 1;
   public selectedFragmentIndex: number | null = null;
   private dataSubscription: Subscription;
 
@@ -198,7 +195,7 @@ export class AppComponent implements OnDestroy {
   public getPenseeCardStyle(cluster: number): { [key: string]: string } {
     const color = this.clusterColorMap[cluster] || '#cccccc';
     return {
-      'background': `linear-gradient(to right, ${color} 2%, white 2%, white 98%, ${color} 98%)`,
+      'background': `linear-gradient(to right, ${color} 1.2vw, white 1.2vw, white calc(100% - 1.2vw), ${color} calc(100% - 1.2vw))`,
     };
   }
 
@@ -217,13 +214,6 @@ export class AppComponent implements OnDestroy {
 
   public isStripeFragmentSelected(fragmentIndex: number): boolean {
     return this.selectedFragmentIndex === fragmentIndex;
-  }
-
-  public onStripeWheel(event: WheelEvent): void {
-    event.preventDefault();
-    const delta = event.deltaY < 0 ? 0.1 : -0.1;
-    const nextZoom = Math.round((this.stripeZoom + delta) * 10) / 10;
-    this.stripeZoom = Math.max(this.MIN_STRIPE_ZOOM, Math.min(this.MAX_STRIPE_ZOOM, nextZoom));
   }
 
   // ── Closed-drawer stripe gradient ────────────────────────────────────────

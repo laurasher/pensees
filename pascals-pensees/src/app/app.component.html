@@ -1,18 +1,7 @@
 <div class="zipper-layout">
     <div class="stripe-drawer" role="complementary" aria-label="Pensées stripe drawer">
-        <div class="stripe-controls">
-            <label for="stripe-zoom">Zoom</label>
-            <input
-                id="stripe-zoom"
-                type="range"
-                [min]="MIN_STRIPE_ZOOM"
-                [max]="MAX_STRIPE_ZOOM"
-                step="0.1"
-                [(ngModel)]="stripeZoom"
-            />
-        </div>
-        <div class="stripe-scroll" (wheel)="onStripeWheel($event)">
-            <div class="stripe-track" [style.transform]="'scaleY(' + stripeZoom + ')'">
+        <div class="stripe-scroll">
+            <div class="stripe-track">
                 <div
                     *ngFor="let pensee of filteredPenseesList"
                     class="stripe-fragment"

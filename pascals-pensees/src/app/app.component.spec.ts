@@ -65,16 +65,4 @@ describe('AppComponent', () => {
     expect(app.isStripeFragmentSelected(unselected.fragment_index)).toBeFalse();
     expect(style['background-color']).toBe(app.clusterColorMap[pensee.cluster]);
   });
-
-  it('should clamp stripe zoom level when zooming with wheel', () => {
-    const app = createComponent();
-
-    app.stripeZoom = 3;
-    app.onStripeWheel({ deltaY: -100, preventDefault: () => {} } as WheelEvent);
-    expect(app.stripeZoom).toBe(3);
-
-    app.stripeZoom = 0.5;
-    app.onStripeWheel({ deltaY: 100, preventDefault: () => {} } as WheelEvent);
-    expect(app.stripeZoom).toBe(0.5);
-  });
 });
