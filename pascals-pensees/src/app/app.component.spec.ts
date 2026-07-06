@@ -55,12 +55,15 @@ describe('AppComponent', () => {
   it('should highlight stripe fragment when a text fragment is selected', () => {
     const app = createComponent();
     const pensee = app.filteredPenseesList[1];
+    const unselected = app.filteredPenseesList[0];
 
     app.onPenseeSelect(pensee);
     const style = app.getStripeFragmentStyle(pensee);
 
     expect(app.selectedFragmentIndex).toBe(pensee.fragment_index);
-    expect(style['opacity']).toBe('0.5');
+    expect(app.isStripeFragmentSelected(pensee.fragment_index)).toBeTrue();
+    expect(app.isStripeFragmentSelected(unselected.fragment_index)).toBeFalse();
+    expect(style['background-color']).toBe(app.clusterColorMap[pensee.cluster]);
   });
 
   it('should clamp stripe zoom level when zooming with wheel', () => {

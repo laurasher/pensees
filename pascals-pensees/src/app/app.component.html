@@ -5,8 +5,8 @@
             <input
                 id="stripe-zoom"
                 type="range"
-                min="0.5"
-                max="3"
+                [min]="MIN_STRIPE_ZOOM"
+                [max]="MAX_STRIPE_ZOOM"
                 step="0.1"
                 [(ngModel)]="stripeZoom"
             />
@@ -16,7 +16,7 @@
                 <div
                     *ngFor="let pensee of filteredPenseesList"
                     class="stripe-fragment"
-                    [class.selected]="selectedFragmentIndex === pensee.fragment_index"
+                    [class.selected]="isStripeFragmentSelected(pensee.fragment_index)"
                     [ngStyle]="getStripeFragmentStyle(pensee)">
                 </div>
             </div>

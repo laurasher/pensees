@@ -28,6 +28,8 @@ export class AppComponent implements OnDestroy {
   public penseesList: FragmentInterface[] = [];
   public filteredPenseesList: FragmentInterface[] = [];
   public searchTerm: string = '';
+  public readonly MIN_STRIPE_ZOOM: number = 0.5;
+  public readonly MAX_STRIPE_ZOOM: number = 3;
   public stripeZoom: number = 1;
   public selectedFragmentIndex: number | null = null;
   private dataSubscription: Subscription;
@@ -206,7 +208,6 @@ export class AppComponent implements OnDestroy {
     return {
       'background-color': color,
       'flex-grow': `${sizeWeight}`,
-      'opacity': this.selectedFragmentIndex === pensee.fragment_index ? '0.5' : '1',
     };
   }
 
@@ -214,10 +215,15 @@ export class AppComponent implements OnDestroy {
     this.selectedFragmentIndex = pensee.fragment_index;
   }
 
+  public isStripeFragmentSelected(fragmentIndex: number): boolean {
+    return this.selectedFragmentIndex === fragmentIndex;
+  }
+
   public onStripeWheel(event: WheelEvent): void {
     event.preventDefault();
     const delta = event.deltaY < 0 ? 0.1 : -0.1;
-    this.stripeZoom = Math.max(0.5, Math.min(3, +(this.stripeZoom + delta).toFixed(1)));
+    const nextZoom = Math.round((this.stripeZoom + delta) * 10) / 10;
+    this.stripeZoom = Math.max(this.MIN_STRIPE_ZOOM, Math.min(this.MAX_STRIPE_ZOOM, nextZoom));
   }
 
   // ── Closed-drawer stripe gradient ────────────────────────────────────────
