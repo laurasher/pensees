@@ -1,3 +1,6 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { AppComponent } from './app.component';
 import { FragmentInterface } from './fragment';
@@ -50,5 +53,30 @@ describe('AppComponent', () => {
     const clusters = app.filteredPenseesList.map(p => p.cluster);
     expect(clusters).toEqual([0, 1]);
     expect(clusters).not.toContain(2);
+  });
+
+  it('should only show title and stripe in the layout', async () => {
+    const http = jasmine.createSpyObj<Pick<HttpClient, 'get'>>('HttpClient', ['get']);
+    http.get.and.returnValue(of(pensees));
+
+    await TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      imports: [FormsModule],
+      providers: [{ provide: HttpClient, useValue: http }],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+
+    const fixture: ComponentFixture<AppComponent> = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const root: HTMLElement = fixture.nativeElement;
+    expect(root.querySelector('#main-page-title')?.textContent).toContain("Pascal's Pensées");
+    expect(root.querySelector('.drawer-closed-stripe')).not.toBeNull();
+
+    expect(root.querySelector('#header-controls')).toBeNull();
+    expect(root.querySelector('#main-page-instructions')).toBeNull();
+    expect(root.querySelector('#charts-bottom-half')).toBeNull();
+    expect(root.querySelector('.drawer-toggle')).toBeNull();
+    expect(root.querySelector('.pensees-drawer')).toBeNull();
   });
 });

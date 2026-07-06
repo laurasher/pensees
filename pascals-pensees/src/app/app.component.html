@@ -3,7 +3,7 @@
     <div id="titles-top-half">
         <div id="title-row">
             <p id="main-page-title">{{ title }}</p>
-            <div id="header-controls">
+            <div id="header-controls" *ngIf="false">
                 <!-- Search Bar -->
                 <div id="search-container">
                     <input
@@ -39,24 +39,23 @@
             </div>
         </div>
         <!-- <p id="main-page-subtitle">{{ subtitle }}</p> -->
-        <p id="main-page-instructions">{{ instructions }}</p>
+        <p id="main-page-instructions" *ngIf="false">{{ instructions }}</p>
     </div>
-    <div id="charts-bottom-half">
+    <div id="charts-bottom-half" *ngIf="false">
         <app-lite-brite-chart #liteBriteChart [data]="data | async" class="column"></app-lite-brite-chart>
         <!-- <app-pensees-display  class="column"></app-pensees-display> -->
     </div>
 </div>
 
 <!-- Closed-drawer colour stripe (replaces the toggle button when tucked in) -->
-<div *ngIf="!isDrawerOpen"
-     class="drawer-closed-stripe"
+<div class="drawer-closed-stripe"
      [style.background]="closedStripeGradient"
      (click)="toggleDrawer()"
      role="button"
      aria-label="Open pensées drawer"></div>
 
 <!-- Pensées Drawer Toggle Button (open state only: chevron to close) -->
-<button *ngIf="isDrawerOpen"
+<button *ngIf="false"
         class="drawer-toggle"
         [class.dragging]="isDragging"
         [style.left.px]="drawerLeft - toggleButtonWidth"
@@ -68,6 +67,7 @@
 
 <!-- Pensées Drawer -->
 <div class="pensees-drawer"
+     *ngIf="false"
      [class.open]="isDrawerOpen"
      [class.dragging]="isDragging"
      [style.left.px]="drawerPositionLeft"
