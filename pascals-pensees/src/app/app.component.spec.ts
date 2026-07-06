@@ -51,4 +51,27 @@ describe('AppComponent', () => {
     expect(clusters).toEqual([0, 1]);
     expect(clusters).not.toContain(2);
   });
+
+  it('should highlight stripe fragment when a text fragment is selected', () => {
+    const app = createComponent();
+    const pensee = app.filteredPenseesList[1];
+
+    app.onPenseeSelect(pensee);
+    const style = app.getStripeFragmentStyle(pensee);
+
+    expect(app.selectedFragmentIndex).toBe(pensee.fragment_index);
+    expect(style['opacity']).toBe('0.5');
+  });
+
+  it('should clamp stripe zoom level when zooming with wheel', () => {
+    const app = createComponent();
+
+    app.stripeZoom = 3;
+    app.onStripeWheel({ deltaY: -100, preventDefault: () => {} } as WheelEvent);
+    expect(app.stripeZoom).toBe(3);
+
+    app.stripeZoom = 0.5;
+    app.onStripeWheel({ deltaY: 100, preventDefault: () => {} } as WheelEvent);
+    expect(app.stripeZoom).toBe(0.5);
+  });
 });
