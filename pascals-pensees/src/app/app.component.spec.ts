@@ -26,6 +26,25 @@ describe('AppComponent', () => {
     expect(app.title).toEqual("Pascal's Pensées");
   });
 
+  it('should toggle the instructions drawer state', () => {
+    const app = createComponent();
+
+    expect(app.isInstructionsDrawerOpen).toBeFalse();
+
+    app.toggleInstructionsDrawer();
+    expect(app.isInstructionsDrawerOpen).toBeTrue();
+
+    app.closeInstructionsDrawer();
+    expect(app.isInstructionsDrawerOpen).toBeFalse();
+  });
+
+  it('should size the instructions drawer to half the viewport width', () => {
+    spyOnProperty(window, 'innerWidth', 'get').and.returnValue(1280);
+    const app = createComponent();
+
+    expect(app.instructionsDrawerWidth).toBe(640);
+  });
+
   it('should filter drawer list by selected clusters', () => {
     const app = createComponent();
 

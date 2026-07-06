@@ -13,6 +13,13 @@ import { LiteBriteChartComponent } from './lite-brite-chart/lite-brite-chart.com
 export class AppComponent implements OnDestroy {
   title = "Pascal's Pensées";
   instructions = "Explore clustering of Blaise Pascal's 924 pensées.";
+  public readonly instructionsDetails: string[] = [
+    "Each colored box represents one of Pascal's pensées arranged chronologically.",
+    "Clusters group pensées by theme so you can compare how ideas recur across the work.",
+    "Click a colored box to read its text below the chart.",
+    "Double click a box to recolor the chart by similarity to that pensée.",
+    "Use the search bar and cluster toggles to focus the chart and drawer on specific passages."
+  ];
   // instructions = "Explore NLP clustering and topic modeling of Pascal's 924 pensées. Each colored box represents one of Pascal's penseés, arranged chronologically. \
   // Each penseé has been assigned to 1 of 10 clusters by k-means clustering of their TF-IDF vector representations. Double click a box to recolor all boxes\
   // according to their topic-modeled similarity to the clicked pensée, from dark meaning most similar to light, meaning not related thematically."
@@ -24,6 +31,7 @@ export class AppComponent implements OnDestroy {
   // of miracles throughout the work, but most especially at the end."
 
   data: Observable<FragmentInterface>;
+  public isInstructionsDrawerOpen: boolean = false;
   public isDrawerOpen: boolean = false;
   public penseesList: FragmentInterface[] = [];
   public filteredPenseesList: FragmentInterface[] = [];
@@ -78,6 +86,11 @@ export class AppComponent implements OnDestroy {
     return this.isDrawerOpen ? this.drawerLeft : window.innerWidth;
   }
 
+  get instructionsDrawerWidth(): number {
+    if (typeof window === 'undefined') return 0;
+    return window.innerWidth / 2;
+  }
+
   // Toggle button always sits flush against the drawer's left edge
   get toggleButtonLeft(): number {
     if (typeof window === 'undefined') return this.drawerWidth * 4;
@@ -98,6 +111,14 @@ export class AppComponent implements OnDestroy {
     } else {
       this.isDrawerOpen = false;
     }
+  }
+
+  public toggleInstructionsDrawer(): void {
+    this.isInstructionsDrawerOpen = !this.isInstructionsDrawerOpen;
+  }
+
+  public closeInstructionsDrawer(): void {
+    this.isInstructionsDrawerOpen = false;
   }
 
   // ── Search ──────────────────────────────────────────────────────────────────
