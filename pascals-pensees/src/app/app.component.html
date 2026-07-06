@@ -3,83 +3,10 @@
     <div id="titles-top-half">
         <div id="title-row">
             <p id="main-page-title">{{ title }}</p>
-            <div id="header-controls">
-                <!-- Search Bar -->
-                <div id="search-container">
-                    <input
-                        type="text"
-                        id="search-input"
-                        placeholder="Search pensées..."
-                        [(ngModel)]="searchTerm"
-                        (ngModelChange)="onSearchChange()"
-                    />
-                    <mat-icon *ngIf="searchTerm" id="clear-icon" (click)="clearSearch()">close</mat-icon>
-                </div>
-                <!-- Cluster Filter Pills -->
-                <div id="cluster-pills-container">
-                    <div id="cluster-pills-header">
-                        <span id="cluster-pills-label">Toggle thematic clusters</span>
-                        <div id="cluster-pills-actions">
-                            <button class="cluster-action" aria-label="Select all thematic clusters" (click)="onSelectAllClusters()">Select All</button>
-                            <button class="cluster-action" aria-label="Deselect all thematic clusters" (click)="onDeselectAllClusters()">Deselect All</button>
-                        </div>
-                    </div>
-                    <div id="cluster-pills-grid">
-                        <div
-                            *ngFor="let cluster of clusters"
-                            class="cluster-pill"
-                            [class.active]="activeClusterFilters.has(cluster)"
-                            [style.background-color]="activeClusterFilters.has(cluster) ? clusterColorMap[cluster] : '#e0e0e0'"
-                            [style.--cluster-color]="clusterColorMap[cluster]"
-                            (click)="onClusterToggle(cluster)">
-                            {{ cluster + 1 }}
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-        <!-- <p id="main-page-subtitle">{{ subtitle }}</p> -->
-        <p id="main-page-instructions">{{ instructions }}</p>
-    </div>
-    <div id="charts-bottom-half">
-        <app-lite-brite-chart #liteBriteChart [data]="data | async" class="column"></app-lite-brite-chart>
-        <!-- <app-pensees-display  class="column"></app-pensees-display> -->
     </div>
 </div>
 
 <!-- Closed-drawer colour stripe (replaces the toggle button when tucked in) -->
-<div *ngIf="!isDrawerOpen"
-     class="drawer-closed-stripe"
-     [style.background]="closedStripeGradient"
-     (click)="toggleDrawer()"
-     role="button"
-     aria-label="Open pensées drawer"></div>
-
-<!-- Pensées Drawer Toggle Button (open state only: chevron to close) -->
-<button *ngIf="isDrawerOpen"
-        class="drawer-toggle"
-        [class.dragging]="isDragging"
-        [style.left.px]="drawerLeft - toggleButtonWidth"
-        [attr.aria-expanded]="isDrawerOpen"
-        (click)="toggleDrawer()"
-        aria-label="Close pensées drawer">
-    <mat-icon>chevron_right</mat-icon>
-</button>
-
-<!-- Pensées Drawer -->
-<div class="pensees-drawer"
-     [class.open]="isDrawerOpen"
-     [class.dragging]="isDragging"
-     [style.left.px]="drawerPositionLeft"
-     (mousedown)="onDragStart($event)"
-     role="complementary"
-     aria-label="Pensées drawer">
-    <div class="pensees-drawer-content">
-        <div
-            *ngFor="let pensee of filteredPenseesList"
-            class="pensee-card"
-            [ngStyle]="getPenseeCardStyle(pensee.cluster)">
-            <p>{{ pensee.corpus }}</p>
-        </div>
-    </div>
-</div>
+<div class="drawer-closed-stripe"
+     [style.background]="closedStripeGradient"></div>
